@@ -43,4 +43,4 @@ jobs:
       - name: Run daily attendance
         run: pnpm attendance
         env:
-          SKLAND_TOKEN: ${{ secrest.SKLAND_TOKEN }}
+          SKLAND_TOKEN: ${{ secrets.SKLAND_TOKEN }}

@@ -16,6 +16,11 @@ type AuthResponse = {
     type: string
     msg: string
     data: { code: string; uid: string }
+} | {
+    statusCode: number,
+    error: string,
+    message: string,
+    validation: any
 }
 
 type CredResponse = SklandResponse<{ cred: string; userId: string; token: string; }>
@@ -66,6 +71,9 @@ async function auth() {
         })
     })
     const data = await response.json() as AuthResponse
+    if ('statusCode' in data && 'message' in data) {
+        throw new Error('登录获取 cred 错误:' + data.message)
+    }
     return data.data
 }
 
@@ -81,6 +89,10 @@ async function signIn(grant_code: string) {
         })
     })
     const data = await response.json() as CredResponse
+
+    if (data.code !== 0) {
+        throw new Error('登录获取 cred 错误:' + data.message)
+    }
     return data.data
 }
 
@@ -88,11 +100,14 @@ async function getBinding(cred: string) {
     const response = await fetch(BINDING_URL, {
         headers: Object.assign({
             cred,
+            platform: '1',
             "Content-Type": "application/json; charset=utf-8"
         }, command_header)
     })
     const data = await response.json() as BindingResponse
-
+    if (data.code !== 0) {
+        throw new Error('获取绑定角色错误:' + data.message)
+    }
     return data.data
 }
 
@@ -100,9 +115,13 @@ const { code } = await auth()
 const { cred } = await signIn(code)
 const { list } = await getBinding(cred)
 
+
+
 Promise.all(
     list.map(i => i.bindingList).flat()
         .map(async character => {
+
+            console.log('开始签到' + character.nickName);
             const response = await fetch(
                 SKLAND_ATTENDANCE_URL,
                 {

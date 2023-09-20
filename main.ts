@@ -57,7 +57,8 @@ type AttendanceResponse = SklandResponse<{
 const command_header = {
     "User-Agent": "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
     "Accept-Encoding": "gzip",
-    "Connection": "close"
+    "Connection": "close",
+    'platform': '1',
 }
 
 async function auth() {
@@ -100,7 +101,6 @@ async function getBinding(cred: string) {
     const response = await fetch(BINDING_URL, {
         headers: Object.assign({
             cred,
-            platform: '1',
             "Content-Type": "application/json; charset=utf-8"
         }, command_header)
     })
@@ -136,7 +136,7 @@ Promise.all(
                     })
                 }
             )
-            const data = await response.json() as AttendanceResponse
+            const data = await response.json() as AttendanceResponse 
 
             if (data.code === 10001) {
                 console.log(`${character.nickName} ${data.message}`)

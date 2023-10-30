@@ -1,3 +1,4 @@
+import assert from 'assert'
 import 'dotenv/config'
 
 const SKLAND_AUTH_URL = 'https://as.hypergryph.com/user/oauth2/v2/grant',
@@ -61,13 +62,13 @@ const command_header = {
     'platform': '1',
 }
 
-async function auth() {
+async function auth(token: string) {
     const response = await fetch(SKLAND_AUTH_URL, {
         method: "POST",
         headers: command_header,
         body: JSON.stringify({
             "appCode": '4ca99fa6b56cc2ba',
-            "token": process.env.SKLAND_TOKEN,
+            "token": token,
             "type": 0
         })
     })
@@ -111,37 +112,43 @@ async function getBinding(cred: string) {
     return data.data
 }
 
-const { code } = await auth()
-const { cred } = await signIn(code)
-const { list } = await getBinding(cred)
+async function doAttendanceForAccount(token: string) {
+    const { code } = await auth(token)
+    const { cred } = await signIn(code)
+    const { list } = await getBinding(cred)
 
+    Promise.all(
+        list.map(i => i.bindingList).flat()
+            .map(async character => {
 
+                console.log('开始签到' + character.nickName);
+                const response = await fetch(
+                    SKLAND_ATTENDANCE_URL,
+                    {
+                        method: "POST",
+                        headers: Object.assign({
+                            cred,
+                            "Content-Type": "application/json; charset=utf-8"
+                        }, command_header),
+                        body: JSON.stringify({
+                            uid: character.uid,
+                            gameId: character.channelMasterId
+                        })
+                    }
+                )
+                const data = await response.json() as AttendanceResponse
 
-Promise.all(
-    list.map(i => i.bindingList).flat()
-        .map(async character => {
-
-            console.log('开始签到' + character.nickName);
-            const response = await fetch(
-                SKLAND_ATTENDANCE_URL,
-                {
-                    method: "POST",
-                    headers: Object.assign({
-                        cred,
-                        "Content-Type": "application/json; charset=utf-8"
-                    }, command_header),
-                    body: JSON.stringify({
-                        uid: character.uid,
-                        gameId: character.channelMasterId
-                    })
+                if (data.code === 10001) {
+                    console.log(`${character.nickName} ${data.message}`)
+                } else {
+                    console.log(`${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`);
                 }
-            )
-            const data = await response.json() as AttendanceResponse 
+            })
+    )
+}
 
-            if (data.code === 10001) {
-                console.log(`${character.nickName} ${data.message}`)
-            } else {
-                console.log(`${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`);
-            }
-        })
-)
+assert(typeof process.env.SKLAND_TOKEN === 'string')
+
+const accounts = Array.from(process.env.SKLAND_TOKEN.split(','))
+
+await Promise.all(accounts.map(token => doAttendanceForAccount(token)))

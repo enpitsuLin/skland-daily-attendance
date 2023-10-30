@@ -16,7 +16,7 @@
 
 回到项目页面，依次点击 Settings--> Secrets -->New secret
 
-建立名为 `SKLAND_TOKEN` 的 secret，值为上一步获取 content，最后点击 Add secret
+建立名为 `SKLAND_TOKEN` 的 secret，值为上一步获取 content，最后点击 Add secret，如果需要多账号支持，请使用半角逗号`,`分割
 
 ### 启动 Github Action
 
@@ -25,3 +25,5 @@
 返回项目主页面，点击上方的`Actions`，再点击左侧的`attendance`，再点击`Run workflow`
 
 至此，部署完毕。
+
+> 注意：github actions 会对60天没有活动的仓库自动禁用，你可能要主动关注一下 github actions 的运行情况（一般会发邮件通知 actions 执行失败）

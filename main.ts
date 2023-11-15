@@ -137,7 +137,9 @@ async function doAttendanceForAccount(token: string) {
                 if (data.code === 0 && data.message === 'OK') {
                     console.log(`${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`);
                 } else {
-                    console.log(`${character.nickName}签到失败, 错误消息: ${data.message} raw response json: ${JSON.stringify(data)}`)
+                    console.error(`${character.nickName}签到失败, 错误消息: ${data.message} raw response json: ${JSON.stringify(data)}`)
+                    // quit ci with error
+                    process.exit(1)
                 }
             })
     )

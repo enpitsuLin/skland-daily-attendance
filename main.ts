@@ -1,5 +1,6 @@
 import assert from 'assert'
 import 'dotenv/config'
+import { command_header, generateSignature } from './utils'
 
 const SKLAND_AUTH_URL = 'https://as.hypergryph.com/user/oauth2/v2/grant',
     CRED_CODE_URL = "https://zonai.skland.com/api/v1/user/auth/generate_cred_by_code",
@@ -55,12 +56,7 @@ type AttendanceResponse = SklandResponse<{
     }[]
 }>
 
-const command_header = {
-    "User-Agent": "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
-    "Accept-Encoding": "gzip",
-    "Connection": "close",
-    'platform': '1',
-}
+
 
 async function auth(token: string) {
     const response = await fetch(SKLAND_AUTH_URL, {
@@ -98,12 +94,11 @@ async function signIn(grant_code: string) {
     return data.data
 }
 
-async function getBinding(cred: string) {
+async function getBinding(cred: string, token: string) {
+    const url = new URL(BINDING_URL)
+    const [sign, headers] = generateSignature(token, url)
     const response = await fetch(BINDING_URL, {
-        headers: Object.assign({
-            cred,
-            "Content-Type": "application/json; charset=utf-8"
-        }, command_header)
+        headers: Object.assign(headers, { sign, cred })
     })
     const data = await response.json() as BindingResponse
     if (data.code !== 0) {
@@ -114,34 +109,35 @@ async function getBinding(cred: string) {
 
 async function doAttendanceForAccount(token: string) {
     const { code } = await auth(token)
-    const { cred } = await signIn(code)
-    const { list } = await getBinding(cred)
+    const { cred, token: signToken } = await signIn(code)
+    const { list } = await getBinding(cred, signToken)
+
 
     Promise.all(
         list.map(i => i.bindingList).flat()
             .map(async character => {
 
                 console.log('开始签到' + character.nickName);
+                const url = new URL(SKLAND_ATTENDANCE_URL)
+                const body = {
+                    uid: character.uid,
+                    gameId: character.channelMasterId
+                }
+                const [sign, headers] = generateSignature(signToken, url, body)
                 const response = await fetch(
                     SKLAND_ATTENDANCE_URL,
                     {
                         method: "POST",
-                        headers: Object.assign({
-                            cred,
-                            "Content-Type": "application/json; charset=utf-8"
-                        }, command_header),
-                        body: JSON.stringify({
-                            uid: character.uid,
-                            gameId: character.channelMasterId
-                        })
+                        headers: Object.assign(headers, { sign, cred, 'Content-Type': "application/json;charset=utf-8" }, command_header),
+                        body: JSON.stringify(body)
                     }
                 )
                 const data = await response.json() as AttendanceResponse
 
-                if (data.code === 10001) {
-                    console.log(`${character.nickName} ${data.message}`)
-                } else {
+                if (data.code === 0 && data.message === 'OK') {
                     console.log(`${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`);
+                } else {
+                    console.log(`${character.nickName}签到失败, 错误消息: ${data.message} raw response json: ${JSON.stringify(data)}`)
                 }
             })
     )

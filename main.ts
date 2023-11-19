@@ -1,9 +1,9 @@
 import assert from 'assert'
 import 'dotenv/config'
 import { command_header, generateSignature } from './utils'
-import { serverChan } from "./message_send.ts";
-import { SKLAND_AUTH_URL, CRED_CODE_URL, BINDING_URL, SKLAND_CHECKIN_URL, SKLAND_ATTENDANCE_URL, SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant.ts';
-import { SklandBoard, AuthResponse, CredResponse, BindingResponse, AttendanceResponse } from './types.ts';
+import { serverChan } from "./message_send";
+import { SKLAND_AUTH_URL, CRED_CODE_URL, BINDING_URL, SKLAND_CHECKIN_URL, SKLAND_ATTENDANCE_URL, SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant';
+import { SklandBoard, AuthResponse, CredResponse, BindingResponse, AttendanceResponse } from './types';
 
 
 async function auth(token: string) {
@@ -124,7 +124,7 @@ async function doAttendanceForAccount(token: string, options: Options) {
     const [combineMessage, excutePushMessage, addMessage] = createCombinePushMessage()
 
 
-    addMessage(`# 森空岛每日签到 \n\n> ${new Date().toLocaleDateString('zh-CN', { dateStyle: 'full', timeStyle: "short" })}`)
+    addMessage(`# 森空岛每日签到 \n\n> ${new Intl.DateTimeFormat('zh-CN', { dateStyle: 'full', timeStyle: "short" }).format(new Date())}`)
     addMessage('## 森空岛各版面每日检票')
     await Promise.all(SKLAND_BOARD_IDS.map(async (id) => {
         const data = await checkIn(cred, signToken, id)

@@ -4,7 +4,6 @@ export async function serverChan(sendkey: string, title: string, content: string
         return -1;
         // throw new Error("Wrong type for serverChan token.");
     }
-    content = content.replace("\n", "\n\n");
     const payload = {
         "title": title,
         "desp": content,

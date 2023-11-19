@@ -18,12 +18,19 @@
 
 建立名为 `SKLAND_TOKEN` 的 secret，值为上一步获取 content，最后点击 Add secret，如果需要多账号支持，请使用半角逗号`,`分割
 
+#### 推送服务
+
+支持 server 酱推送每日签到信息，建立名为 `SERVERCHAN_SENDKEY` 的 secret 填入你 server 酱的推送密钥
+
+<details>
+  <summary>最终可能有的 secrets 如下</summary>
+
 | Name   | Secret                           |
 | ------ | ------------------------------- |
-| SKLAND_TOKEN *   | 上一步获取的 content  |
-| SERVERCHAN_SENDKEY  | Server酱 推送密钥 |
+| SKLAND_TOKEN *   | 森空岛 token  |
+| SERVERCHAN_SENDKEY  | Server酱推送密钥，可选 |
 
-以上 SKLAND_TOKEN 为签到必填项 推送项可填
+</details>
 
 ### 启动 Github Action
 

@@ -14,9 +14,16 @@
 
 ### 添加 Cookie 至 Secrets
 
-回到项目页面，依次点击 Settings--> Secrets -->New secret
+点击Settings -> 点击选项卡 Secrets and variables -> 点击Actions -> New repository secret
 
 建立名为 `SKLAND_TOKEN` 的 secret，值为上一步获取 content，最后点击 Add secret，如果需要多账号支持，请使用半角逗号`,`分割
+
+| Name   | Secret                           |
+| ------ | ------------------------------- |
+| SKLAND_TOKEN *   | 上一步获取的 content  |
+| SERVERCHAN_SENDKEY  | Server酱 推送密钥 |
+
+以上 SKLAND_TOKEN 为签到必填项 推送项可填
 
 ### 启动 Github Action
 

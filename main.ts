@@ -1,6 +1,7 @@
 import assert from 'assert'
 import 'dotenv/config'
 import { command_header, generateSignature } from './utils'
+import { serverChan } from "./message_send.ts";
 
 const SKLAND_AUTH_URL = 'https://as.hypergryph.com/user/oauth2/v2/grant',
     CRED_CODE_URL = "https://zonai.skland.com/api/v1/user/auth/generate_cred_by_code",
@@ -133,11 +134,15 @@ async function doAttendanceForAccount(token: string) {
                     }
                 )
                 const data = await response.json() as AttendanceResponse
-
+                let msg = ''
                 if (data.code === 0 && data.message === 'OK') {
-                    console.log(`${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`);
+                    msg = `${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`
+                    console.log(msg);
+                    await serverChan(serverChan_sendkey, "Skland签到成功", msg);
                 } else {
-                    console.error(`${character.nickName}签到失败, 错误消息: ${data.message} raw response json: ${JSON.stringify(data)}`)
+                    msg = `${character.nickName}签到失败, 错误消息: ${data.message} raw response json: ${JSON.stringify(data)}`
+                    console.error(msg)
+                    await serverChan(serverChan_sendkey, "Skland签到失败", msg);
                     // quit ci with error
                     process.exit(1)
                 }
@@ -148,5 +153,6 @@ async function doAttendanceForAccount(token: string) {
 assert(typeof process.env.SKLAND_TOKEN === 'string')
 
 const accounts = Array.from(process.env.SKLAND_TOKEN.split(','))
+const serverChan_sendkey = process.env.SERVERCHAN_SENDKEY
 
 await Promise.all(accounts.map(token => doAttendanceForAccount(token)))

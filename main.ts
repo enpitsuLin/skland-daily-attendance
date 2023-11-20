@@ -1,7 +1,7 @@
 import assert from 'assert'
 import 'dotenv/config'
 import { command_header, generateSignature } from './utils'
-import { serverChan } from "./message_send";
+import { serverChan, bark } from "./message_send";
 import { SKLAND_AUTH_URL, CRED_CODE_URL, BINDING_URL, SKLAND_CHECKIN_URL, SKLAND_ATTENDANCE_URL, SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant';
 import { SklandBoard, AuthResponse, CredResponse, BindingResponse, AttendanceResponse } from './types';
 
@@ -85,7 +85,9 @@ async function attendance(cred: string, token: string, body: { uid: string, game
 
 interface Options {
     /** server 酱推送功能的启用，false 或者 server 酱的token */
-    withServerChan?: false | string
+    withServerChan?: false | string,
+    /** bark 推送功能的启用，false 或者 bark 的 URL */
+    withBark?: false | string,
 }
 
 async function doAttendanceForAccount(token: string, options: Options) {
@@ -107,6 +109,12 @@ async function doAttendanceForAccount(token: string, options: Options) {
                 if (options.withServerChan)
                     await serverChan(
                         options.withServerChan,
+                        `【森空岛每日签到】`,
+                        messages.join('\n\n')
+                    )
+                if (options.withBark)
+                    await bark(
+                        options.withBark,
                         `【森空岛每日签到】`,
                         messages.join('\n\n')
                     )
@@ -162,5 +170,6 @@ assert(typeof process.env.SKLAND_TOKEN === 'string')
 
 const accounts = Array.from(process.env.SKLAND_TOKEN.split(','))
 const withServerChan = process.env.SERVERCHAN_SENDKEY
+const withBark = process.env.BARK_URL
 
-await Promise.all(accounts.map(token => doAttendanceForAccount(token, { withServerChan })))
+await Promise.all(accounts.map(token => doAttendanceForAccount(token, { withServerChan, withBark })))

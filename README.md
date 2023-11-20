@@ -20,15 +20,19 @@
 
 #### 推送服务
 
-支持 server 酱推送每日签到信息，建立名为 `SERVERCHAN_SENDKEY` 的 secret 填入你 server 酱的推送密钥
+- 支持 server 酱推送每日签到信息，建立名为 `SERVERCHAN_SENDKEY` 的 secret 填入你 server 酱的推送密钥
+
+- 支持 bark 推送每日签到信息，建立名为 `BARK_URL` 的 secret 填入你 bark 的推送地址，例如 `https://api.day.app/xxxxxxxxxx/`，支持自建服务器
+
 
 <details>
   <summary>最终可能有的 secrets 如下</summary>
 
-| Name   | Secret                           |
-| ------ | ------------------------------- |
-| SKLAND_TOKEN *   | 森空岛 token  |
-| SERVERCHAN_SENDKEY  | Server酱推送密钥，可选 |
+| Name               | Secret                 |
+| ------------------ | ---------------------- |
+| SKLAND_TOKEN *     | 森空岛 token           |
+| SERVERCHAN_SENDKEY | Server酱推送密钥，可选 |
+| BARK_URL           | Bark 推送地址，可选    |
 
 </details>
 

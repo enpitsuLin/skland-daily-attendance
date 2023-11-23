@@ -132,7 +132,7 @@ async function doAttendanceForAccount(token: string, options: Options) {
     const [combineMessage, excutePushMessage, addMessage] = createCombinePushMessage()
 
 
-    addMessage(`# 森空岛每日签到 \n\n> ${new Intl.DateTimeFormat('zh-CN', { dateStyle: 'full', timeStyle: "short" }).format(new Date())}`)
+    addMessage(`# 森空岛每日签到 \n\n> ${new Intl.DateTimeFormat('zh-CN', { dateStyle: 'full', timeStyle: "short", timeZone: 'Asia/Shanghai' }).format(new Date())}`)
     addMessage('## 森空岛各版面每日检票')
     await Promise.all(SKLAND_BOARD_IDS.map(async (id) => {
         const data = await checkIn(cred, signToken, id)
@@ -155,7 +155,7 @@ async function doAttendanceForAccount(token: string, options: Options) {
             gameId: character.channelMasterId
         })
         if (data.code === 0 && data.message === 'OK') {
-            const msg = `角色${character.nickName}签到成功, 获得了${data.data.awards.map(a => a.resource.name + '' + a.count + '个').join(',')}`
+            const msg = `角色${character.nickName}签到成功, 获得了${data.data.awards.map(a => '「' + a.resource.name + '」' + a.count + '个').join(',')}`
             combineMessage(msg)
         } else {
             const msg = `角色${character.nickName}签到失败, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\` `

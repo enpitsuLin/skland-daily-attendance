@@ -33,3 +33,9 @@ export function generateSignature<T extends Record<string, string>>(token: strin
 
   return [sign.toString(), header as typeof sign_header] as const
 }
+
+export function getPrivacyName(name: string) {
+  return name.split('')
+    .map((s, i) => (i > 0 && i < name.length - 1) ? '*' : s)
+    .join('')
+}

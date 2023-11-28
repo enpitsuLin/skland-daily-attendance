@@ -5,7 +5,6 @@ on:
     - cron: "0 20 * * *"
   workflow_dispatch:
 
-
 jobs:
   attendance:
     runs-on: ubuntu-latest
@@ -16,7 +15,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/Hydrogen'
+          node-version: "lts/Hydrogen"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -39,10 +38,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Run daily attendance
         run: pnpm attendance
         env:
           SKLAND_TOKEN: ${{ secrets.SKLAND_TOKEN }}
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
           BARK_URL: ${{ secrets.BARK_URL }}
+          SELECT_CHANNEL: ${{ secrets.SELECT_CHANNEL }}

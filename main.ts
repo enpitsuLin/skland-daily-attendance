@@ -1,6 +1,6 @@
 import assert from 'assert'
 import 'dotenv/config'
-import { command_header, generateSignature } from './utils'
+import { command_header, generateSignature, getPrivacyName } from './utils'
 import { serverChan, bark } from "./message_send";
 import { SKLAND_AUTH_URL, CRED_CODE_URL, BINDING_URL, SKLAND_CHECKIN_URL, SKLAND_ATTENDANCE_URL, SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant';
 import { SklandBoard, AuthResponse, CredResponse, BindingResponse, AttendanceResponse } from './types';
@@ -146,23 +146,24 @@ async function doAttendanceForAccount(token: string, options: Options) {
     }))
 
     addMessage('## 明日方舟签到')
-
+    let successAttendance = 0;
     const characterList = list.map(i => i.bindingList).flat()
     await Promise.all(characterList.map(async character => {
-        console.log('开始签到' + character.nickName);
         const data = await attendance(cred, signToken, {
             uid: character.uid,
             gameId: character.channelMasterId
-        })
+        });
+        console.log(`将签到第${successAttendance + 1}个角色`);
         if (data.code === 0 && data.message === 'OK') {
-            const msg = `角色${character.nickName}签到成功, 获得了${data.data.awards.map(a => '「' + a.resource.name + '」' + a.count + '个').join(',')}`
-            combineMessage(msg)
+            const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到成功${', 获得了' + data.data.awards.map(a => '「' + a.resource.name + '」' + a.count + '个').join(',')}`;
+            combineMessage(msg);
+            successAttendance++;
         } else {
-            const msg = `角色${character.nickName}签到失败, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\` `
-            combineMessage(msg, true)
+            const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`;
+            combineMessage(msg, true);
         }
-    }))
-
+    }));
+    combineMessage(`成功签到${successAttendance}个角色`)
     await excutePushMessage()
 }
 

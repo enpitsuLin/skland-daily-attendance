@@ -1,17 +1,16 @@
-import { createHmac, createHash } from 'node:crypto'
-
+import { createHash, createHmac } from 'node:crypto'
 
 export const command_header = {
-  "User-Agent": "Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 34; ) Okhttp/4.11.0",
+  'User-Agent': 'Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 34; ) Okhttp/4.11.0',
   'Accept-Encoding': 'gzip',
-  'Connection': 'close'
+  'Connection': 'close',
 }
 
 export const sign_header = {
-  'platform': '1',
-  'timestamp': '',
-  'dId': '',
-  'vName': '1.5.1'
+  platform: '1',
+  timestamp: '',
+  dId: '',
+  vName: '1.5.1',
 }
 
 const MILLISECOND_PER_SECOND = 1000
@@ -21,7 +20,7 @@ export function generateSignature<T extends Record<string, string>>(token: strin
   const header = { ...sign_header }
   header.timestamp = timestamp
   const { pathname, searchParams } = new URL(uri)
-  const str = `${pathname}${searchParams.toString()}${!!data ? JSON.stringify(data) : ''}${timestamp}${JSON.stringify(header)}`
+  const str = `${pathname}${searchParams.toString()}${data ? JSON.stringify(data) : ''}${timestamp}${JSON.stringify(header)}`
 
   const hmacSha256ed = createHmac('sha256', token)
     .update(str, 'utf-8')

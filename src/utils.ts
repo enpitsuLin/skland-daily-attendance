@@ -4,6 +4,7 @@ export const command_header = {
   'User-Agent': 'Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 34; ) Okhttp/4.11.0',
   'Accept-Encoding': 'gzip',
   'Connection': 'close',
+  'Content-Type': 'application/json'
 }
 
 export const sign_header = {

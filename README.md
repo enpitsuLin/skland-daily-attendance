@@ -44,3 +44,7 @@
 至此，部署完毕。
 
 > 注意：github actions 会对60天没有活动的仓库自动禁用，你可能要主动关注一下 github actions 的运行情况（一般会发邮件通知 actions 执行失败）
+
+## ~~广告~~
+
+推荐一款浏览器扩展——[罗德岛远程指挥部](https://github.com/enpitsuLin/rhodes-headquarters) 能在浏览器上监控博士您岛上的最新信息

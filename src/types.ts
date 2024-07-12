@@ -54,4 +54,6 @@ export enum SklandBoard {
   Popucom = 4,
   /** 纳斯特港 */
   Neste = 100,
+  /** 开拓芯 */
+  Coreblazer = 101
 }

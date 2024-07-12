@@ -9,11 +9,12 @@ export const SKLAND_ATTENDANCE_URL = 'https://zonai.skland.com/api/v1/game/atten
 /** 登岛检票 url */
 export const SKLAND_CHECKIN_URL = 'https://zonai.skland.com/api/v1/score/checkin'
 
-export const SKLAND_BOARD_IDS = [SklandBoard.Arknight, SklandBoard.Gryphfrontier, SklandBoard.Endfield, SklandBoard.Popucom, SklandBoard.Neste]
+export const SKLAND_BOARD_IDS = [SklandBoard.Arknight, SklandBoard.Gryphfrontier, SklandBoard.Endfield, SklandBoard.Popucom, SklandBoard.Neste, SklandBoard.Coreblazer]
 export const SKLAND_BOARD_NAME_MAPPING: Record<SklandBoard, string> = {
   [SklandBoard.Arknight]: '明日方舟',
   [SklandBoard.Gryphfrontier]: '来自星辰',
   [SklandBoard.Endfield]: '明日方舟: 终末地',
   [SklandBoard.Popucom]: '泡姆泡姆',
   [SklandBoard.Neste]: '纳斯特港',
+  [SklandBoard.Coreblazer]: '开拓芯',
 }

@@ -1,4 +1,7 @@
 import { createHash, createHmac } from 'node:crypto'
+import { createFetch } from 'ofetch'
+import { ProxyAgent } from 'undici'
+
 
 export const command_header = {
   'User-Agent': 'Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 34; ) Okhttp/4.11.0',
@@ -16,7 +19,7 @@ export const sign_header = {
 
 const MILLISECOND_PER_SECOND = 1000
 
-export function generateSignature<T extends Record<string, string>>(token: string, uri: string | URL, data?: T) {
+export function generateSignature<T extends Record<string, string>>(token: string, uri: string, data?: T) {
   const timestamp = (Date.now() - 2 * MILLISECOND_PER_SECOND).toString().slice(0, -3)
   const header = { ...sign_header }
   header.timestamp = timestamp
@@ -39,3 +42,9 @@ export function getPrivacyName(name: string) {
     .map((s, i) => (i > 0 && i < name.length - 1) ? '*' : s)
     .join('')
 }
+
+export const ofetch = createFetch({
+  defaults: {
+    dispatcher: new ProxyAgent('http://127.0.0.1:7890')
+  }
+})

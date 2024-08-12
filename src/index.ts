@@ -73,13 +73,14 @@ export async function doAttendanceForAccount(token: string, options: Options) {
         const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
         combineMessage(msg, true)
       }
+
+      // 多个角色之间的延时
+      await setTimeout(3000)
     }
     else {
       combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
     }
 
-    // 多个角色之间的延时
-    await setTimeout(3000)
   }))
   if (successAttendance !== 0)
     combineMessage(`成功签到${successAttendance}个角色`)

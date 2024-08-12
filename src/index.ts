@@ -1,9 +1,9 @@
-import { setTimeout } from 'node:timers/promises'
 import process from 'node:process'
+import { setTimeout } from 'node:timers/promises'
 import { attendance, auth, checkIn, getBinding, signIn } from './api'
-import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
 import { bark, serverChan } from './notifications'
 import { getPrivacyName } from './utils'
+import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
 
 interface Options {
   /** server 酱推送功能的启用，false 或者 server 酱的token */
@@ -54,6 +54,35 @@ export async function doAttendanceForAccount(token: string, options: Options) {
 
   const [combineMessage, excutePushMessage, addMessage] = createCombinePushMessage()
 
+  addMessage('## 明日方舟签到')
+  let successAttendance = 0
+  const characterList = list.map(i => i.bindingList).flat()
+  await Promise.all(characterList.map(async (character) => {
+    console.log(`将签到第${successAttendance + 1}个角色`)
+    const data = await attendance(cred, signToken, {
+      uid: character.uid,
+      gameId: character.channelMasterId,
+    })
+    if (data) {
+      if (data.code === 0 && data.message === 'OK') {
+        const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到成功${`, 获得了${data.data.awards.map(a => `「${a.resource.name}」${a.count}个`).join(',')}`}`
+        combineMessage(msg)
+        successAttendance++
+      }
+      else {
+        const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
+        combineMessage(msg, true)
+      }
+    }
+    else {
+      combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
+    }
+
+    // 多个角色之间的延时
+    await setTimeout(3000)
+  }))
+  combineMessage(`成功签到${successAttendance}个角色`)
+
   addMessage(`# 森空岛每日签到 \n\n> ${new Intl.DateTimeFormat('zh-CN', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Shanghai' }).format(new Date())}`)
   addMessage('## 森空岛各版面每日检票')
   await Promise.all(SKLAND_BOARD_IDS.map(async (id) => {
@@ -70,27 +99,5 @@ export async function doAttendanceForAccount(token: string, options: Options) {
     await setTimeout(3000)
   }))
 
-  addMessage('## 明日方舟签到')
-  let successAttendance = 0
-  const characterList = list.map(i => i.bindingList).flat()
-  await Promise.all(characterList.map(async (character) => {
-    const data = await attendance(cred, signToken, {
-      uid: character.uid,
-      gameId: character.channelMasterId,
-    })
-    console.log(`将签到第${successAttendance + 1}个角色`)
-    if (data.code === 0 && data.message === 'OK') {
-      const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到成功${`, 获得了${data.data.awards.map(a => `「${a.resource.name}」${a.count}个`).join(',')}`}`
-      combineMessage(msg)
-      successAttendance++
-    }
-    else {
-      const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
-      combineMessage(msg, true)
-    }
-    // 多个角色之间的延时
-    await setTimeout(3000)
-  }))
-  combineMessage(`成功签到${successAttendance}个角色`)
   await excutePushMessage()
 }

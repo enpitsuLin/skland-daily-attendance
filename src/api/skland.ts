@@ -1,25 +1,35 @@
-import { command_header, generateSignature, ofetch } from '../utils'
-import { BINDING_URL, CRED_CODE_URL, SKLAND_ATTENDANCE_URL, SKLAND_CHECKIN_URL } from '../constant'
-import type { AttendanceResponse, BindingResponse, CredResponse, SklandBoard } from '../types'
+import { createFetch } from 'ofetch'
+import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
+import { command_header, onSignatureRequest } from '../utils'
+
+const fetch = createFetch({
+  defaults: {
+    baseURL: 'https://zonai.skland.com',
+    onRequest: onSignatureRequest,
+    // @ts-expect-error ignore
+    agent: new ProxyAgent(),
+  },
+})
 
 /**
  * grant_code 获得森空岛用户的 token 等信息
  * @param grant_code 从 OAuth 接口获取的 grant_code
  */
 export async function signIn(grant_code: string) {
-  const data = await ofetch<CredResponse>(CRED_CODE_URL, {
-    method: 'POST',
-    headers: Object.assign({
-      'Content-Type': 'application/json; charset=utf-8',
-    }, command_header),
-    body: JSON.stringify({
-      code: grant_code,
-      kind: 1,
-    })
-  }) 
-
-  if (data.code !== 0)
-    throw new Error(`登录获取 cred 错误:${data.message}`)
+  const data = await fetch<CredResponse>(
+    '/api/v1/user/auth/generate_cred_by_code',
+    {
+      method: 'POST',
+      headers: command_header,
+      body: {
+        code: grant_code,
+        kind: 1,
+      },
+      onRequestError(ctx) {
+        throw new Error(`登录获取 cred 错误:${ctx.error.message}`)
+      },
+    },
+  )
 
   return data.data
 }
@@ -29,12 +39,15 @@ export async function signIn(grant_code: string) {
  * @param token 森空岛用户的 token
  */
 export async function getBinding(cred: string, token: string) {
-  const [sign, headers] = generateSignature(token, BINDING_URL)
-  const data = await ofetch<BindingResponse>(BINDING_URL, {
-    headers: Object.assign(headers, { sign, cred }),
-  })
-  if (data.code !== 0)
-    throw new Error(`获取绑定角色错误:${data.message}`)
+  const data = await fetch<BindingResponse>(
+    '/api/v1/game/player/binding',
+    {
+      headers: { token, cred },
+      onRequestError(ctx) {
+        throw new Error(`获取绑定角色错误:${ctx.error.message}`)
+      },
+    },
+  )
 
   return data.data
 }
@@ -45,27 +58,49 @@ export async function getBinding(cred: string, token: string) {
  * @param token 森空岛用户的 token
  */
 export async function checkIn(cred: string, token: string, id: SklandBoard) {
-  const body = { gameId: id.toString() }
-  const [sign, cryptoHeaders] = generateSignature(token, SKLAND_CHECKIN_URL, body)
-  const headers = Object.assign(cryptoHeaders, { sign, cred, 'Content-Type': 'application/json;charset=utf-8' }, command_header)
-  const data = await ofetch<{ code: number, message: string, timestamp: string }>(
-    SKLAND_CHECKIN_URL,
-    { method: 'POST', headers, body: JSON.stringify(body) },
+  const data = await fetch<{ code: number, message: string, timestamp: string }>(
+    '/api/v1/score/checkin',
+    {
+      method: 'POST',
+      headers: Object.assign({ token, cred }, command_header),
+      body: { gameId: id.toString() },
+    },
   )
   return data
 }
+
 /**
  * 明日方舟每日签到
  * @param cred 鹰角网络通行证账号的登录凭证
  * @param token 森空岛用户的 token
  */
 export async function attendance(cred: string, token: string, body: { uid: string, gameId: string }) {
-  const [sign, cryptoHeaders] = generateSignature(token, SKLAND_ATTENDANCE_URL, body)
-  const headers = Object.assign(cryptoHeaders, { sign, cred, 'Content-Type': 'application/json;charset=utf-8' }, command_header)
 
-  const data = await ofetch<AttendanceResponse>(
-    SKLAND_ATTENDANCE_URL,
-    { method: 'POST', headers, body: JSON.stringify(body) },
+  const record = await fetch<GetAttendanceResponse>(
+    '/api/v1/game/attendance',
+    {
+      headers: Object.assign({ token, cred }, command_header),
+      query: body
+    },
   )
-  return data
+
+  const todayAttended = record.data.records.find((i) => {
+    const today = new Date().setHours(0, 0, 0, 0);
+    return new Date(Number(i.ts) * 1000).setHours(0, 0, 0, 0) === today;
+  })
+  if (todayAttended) {
+    // 今天已经签到过了
+    return false
+  }
+  else {
+    const data = await fetch<AttendanceResponse>(
+      '/api/v1/game/attendance',
+      {
+        method: 'POST',
+        headers: Object.assign({ token, cred }, command_header),
+        body
+      },
+    )
+    return data
+  }
 }

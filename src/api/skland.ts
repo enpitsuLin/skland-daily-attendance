@@ -1,6 +1,8 @@
 import { createFetch } from 'ofetch'
+import { ProxyAgent } from 'proxy-agent'
 import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
 import { command_header, onSignatureRequest } from '../utils'
+import { SKLAND_BOARD_IDS } from '../constant'
 
 const fetch = createFetch({
   defaults: {
@@ -52,6 +54,19 @@ export async function getBinding(cred: string, token: string) {
   return data.data
 }
 
+export async function getScoreIsCheckIn(cred: string, token: string) {
+  const data = await fetch<{ code: number, message: string, data: { list: { gameId: number, checked: 1 | 0 }[] } }>(
+    '/api/v1/score/ischeckin',
+    {
+      headers: Object.assign({ token, cred }, command_header),
+      query: {
+        gameIds: SKLAND_BOARD_IDS
+      }
+    },
+  )
+  return data
+}
+
 /**
  * 登岛检票
  * @param cred 鹰角网络通行证账号的登录凭证
@@ -75,18 +90,17 @@ export async function checkIn(cred: string, token: string, id: SklandBoard) {
  * @param token 森空岛用户的 token
  */
 export async function attendance(cred: string, token: string, body: { uid: string, gameId: string }) {
-
   const record = await fetch<GetAttendanceResponse>(
     '/api/v1/game/attendance',
     {
       headers: Object.assign({ token, cred }, command_header),
-      query: body
+      query: body,
     },
   )
 
   const todayAttended = record.data.records.find((i) => {
-    const today = new Date().setHours(0, 0, 0, 0);
-    return new Date(Number(i.ts) * 1000).setHours(0, 0, 0, 0) === today;
+    const today = new Date().setHours(0, 0, 0, 0)
+    return new Date(Number(i.ts) * 1000).setHours(0, 0, 0, 0) === today
   })
   if (todayAttended) {
     // 今天已经签到过了
@@ -98,7 +112,7 @@ export async function attendance(cred: string, token: string, body: { uid: strin
       {
         method: 'POST',
         headers: Object.assign({ token, cred }, command_header),
-        body
+        body,
       },
     )
     return data

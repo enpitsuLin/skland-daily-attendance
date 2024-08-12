@@ -1,15 +1,16 @@
 import { createHash, createHmac } from 'node:crypto'
 import type { FetchContext } from 'ofetch'
+import { stringifyQuery } from 'ufo'
 
 export const command_header = {
-  'User-Agent': 'Skland/1.21.0 (com.hypergryph.skland; build:102100065; Android 34; ) Okhttp/4.11.0',
+  'User-Agent': 'Skland/1.21.0 (com.hypergryph.skland; build:102100065; iOS 17.6.0; ) Alamofire/5.7.1',
   'Accept-Encoding': 'gzip',
   'Connection': 'close',
   'Content-Type': 'application/json',
 }
 
 export const sign_header = {
-  platform: '1',
+  platform: '2',
   timestamp: '',
   dId: '',
   vName: '1.21.0',
@@ -43,7 +44,7 @@ export function onSignatureRequest(ctx: FetchContext) {
   if (!token)
     throw new Error('token 不存在')
 
-  const searchParams = new URLSearchParams(ctx.options.query)
+  const query = ctx.options.query ? stringifyQuery(ctx.options.query) : ''
   const timestamp = (Date.now() - 2 * MILLISECOND_PER_SECOND).toString().slice(0, -3)
   const signatureHeaders = {
     platform: '1',
@@ -51,7 +52,7 @@ export function onSignatureRequest(ctx: FetchContext) {
     dId: '',
     vName: '1.21.0',
   }
-  const str = `${pathname}${searchParams.toString()}${ctx.options.body ? JSON.stringify(ctx.options.body) : ''}${timestamp}${JSON.stringify(signatureHeaders)}`
+  const str = `${pathname}${query}${ctx.options.body ? JSON.stringify(ctx.options.body) : ''}${timestamp}${JSON.stringify(signatureHeaders)}`
 
   const hmacSha256ed = createHmac('sha256', token)
     .update(str, 'utf-8')
@@ -66,6 +67,6 @@ export function onSignatureRequest(ctx: FetchContext) {
   })
   headers.append('sign', sign)
   headers.delete('token')
-
+  
   ctx.options.headers = headers
 }

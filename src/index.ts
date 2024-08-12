@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
-import { attendance, auth, checkIn, getBinding, signIn } from './api'
+import { attendance, auth, checkIn, getBinding, getScoreIsCheckIn, signIn } from './api'
 import { bark, serverChan } from './notifications'
 import { getPrivacyName } from './utils'
 import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
@@ -81,23 +81,35 @@ export async function doAttendanceForAccount(token: string, options: Options) {
     // 多个角色之间的延时
     await setTimeout(3000)
   }))
-  combineMessage(`成功签到${successAttendance}个角色`)
+  if (successAttendance !== 0)
+    combineMessage(`成功签到${successAttendance}个角色`)
 
   addMessage(`# 森空岛每日签到 \n\n> ${new Intl.DateTimeFormat('zh-CN', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Shanghai' }).format(new Date())}`)
   addMessage('## 森空岛各版面每日检票')
-  await Promise.all(SKLAND_BOARD_IDS.map(async (id) => {
-    const data = await checkIn(cred, signToken, id)
-    const name = SKLAND_BOARD_NAME_MAPPING[id]
-    if (data.message === 'OK' && data.code === 0) {
-      combineMessage(`版面【${name}】登岛检票成功`)
-    }
-    else {
-      // 登岛检票 最后不会以错误结束进程
-      combineMessage(`版面【${name}】登岛检票失败, 错误信息: ${data.message}`)
-    }
-    // 多个登岛检票之间的延时
-    await setTimeout(3000)
-  }))
+  const isCheckIn = await getScoreIsCheckIn(cred, signToken)
+
+  await Promise.all(
+    SKLAND_BOARD_IDS
+      .map(async (id) => {
+        // 过滤已经签到过的 
+        const name = SKLAND_BOARD_NAME_MAPPING[id]
+        if (isCheckIn.data.list.find(i => i.gameId === id)?.checked !== 1) {
+          const data = await checkIn(cred, signToken, id)
+
+          if (data.message === 'OK' && data.code === 0) {
+            combineMessage(`版面【${name}】登岛检票成功`)
+          }
+          else {
+            // 登岛检票 最后不会以错误结束进程
+            combineMessage(`版面【${name}】登岛检票失败, 错误信息: ${data.message}`)
+          }
+          // 多个登岛检票之间的延时
+          await setTimeout(3000)
+        } else {
+          combineMessage(`版面【${name}】今天已经登岛检票过了`)
+        }
+      })
+  )
 
   await excutePushMessage()
 }

@@ -1,7 +1,9 @@
-import { getPrivacyName } from './utils'
-import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
+import { setTimeout } from 'node:timers/promises'
+import process from 'node:process'
 import { attendance, auth, checkIn, getBinding, signIn } from './api'
+import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
 import { bark, serverChan } from './notifications'
+import { getPrivacyName } from './utils'
 
 interface Options {
   /** server 酱推送功能的启用，false 或者 server 酱的token */
@@ -64,6 +66,8 @@ export async function doAttendanceForAccount(token: string, options: Options) {
       // 登岛检票 最后不会以错误结束进程
       combineMessage(`版面【${name}】登岛检票失败, 错误信息: ${data.message}`)
     }
+    // 多个登岛检票之间的延时
+    await setTimeout(3000)
   }))
 
   addMessage('## 明日方舟签到')
@@ -84,6 +88,8 @@ export async function doAttendanceForAccount(token: string, options: Options) {
       const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
       combineMessage(msg, true)
     }
+    // 多个角色之间的延时
+    await setTimeout(3000)
   }))
   combineMessage(`成功签到${successAttendance}个角色`)
   await excutePushMessage()

@@ -1,7 +1,9 @@
 import { createHash, createHmac } from 'node:crypto'
+import { createFetch } from 'ofetch'
+import { ProxyAgent } from 'proxy-agent'
 
 export const command_header = {
-  'User-Agent': 'Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 34; ) Okhttp/4.11.0',
+  'User-Agent': 'Skland/1.21.0 (com.hypergryph.skland; build:102100065; Android 34; ) Okhttp/4.11.0',
   'Accept-Encoding': 'gzip',
   'Connection': 'close',
   'Content-Type': 'application/json'
@@ -11,12 +13,12 @@ export const sign_header = {
   platform: '1',
   timestamp: '',
   dId: '',
-  vName: '1.5.1',
+  vName: '1.21.0',
 }
 
 const MILLISECOND_PER_SECOND = 1000
 
-export function generateSignature<T extends Record<string, string>>(token: string, uri: string | URL, data?: T) {
+export function generateSignature<T extends Record<string, string>>(token: string, uri: string, data?: T) {
   const timestamp = (Date.now() - 2 * MILLISECOND_PER_SECOND).toString().slice(0, -3)
   const header = { ...sign_header }
   header.timestamp = timestamp
@@ -39,3 +41,10 @@ export function getPrivacyName(name: string) {
     .map((s, i) => (i > 0 && i < name.length - 1) ? '*' : s)
     .join('')
 }
+
+export const ofetch = createFetch({
+  defaults: {
+    //@ts-expect-error ignore
+    agent: new ProxyAgent(),
+  }
+})

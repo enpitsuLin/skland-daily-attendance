@@ -2,6 +2,11 @@
 
 使用 github action 定时执行森空岛各版面登岛检票和明日方舟每日签到任务
 
+> [!CAUTION]
+> 从 2024 年 8 月 13 日起，基于 api 请求的自动签到已全面拉闸，有强烈需求的可以使用 https://github.com/MaaXYZ/MaaAssistantSkland
+> 
+> 后续如果有逆向解参数或者黑盒调用方式解决风控的自动签到大概率不会开源
+
 ## 使用
 
 ### Fork 项目  

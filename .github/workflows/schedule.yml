@@ -38,16 +38,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install WARP
-        uses: enpitsuLin/warp@v1.1.2
-        with: 
-          mode: warp+doh
-      
-      - name: Test WARP
-        run: |
-          echo "$(curl https://www.cloudflare.com/cdn-cgi/trace/)"
-        shell: bash
-
       - name: Run daily attendance
         run: pnpm attendance
         env:

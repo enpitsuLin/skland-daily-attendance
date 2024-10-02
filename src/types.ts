@@ -79,5 +79,5 @@ export enum SklandBoard {
   /** 纳斯特港 */
   Neste = 100,
   /** 开拓芯 */
-  Coreblazer = 101
+  Coreblazer = 101,
 }

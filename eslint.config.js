@@ -1,9 +1,14 @@
 import { antfu } from '@antfu/eslint-config'
 
-export default antfu({}, [
+export default antfu(
   {
-    rules: {
-      'no-console': 'off',
-    },
+    ignores: ['src/*.js'],
   },
-])
+  [
+    {
+      rules: {
+        'no-console': 'off',
+      },
+    },
+  ],
+)

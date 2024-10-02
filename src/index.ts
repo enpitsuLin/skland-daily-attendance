@@ -1,9 +1,8 @@
 import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
-import { attendance, auth, checkIn, getBinding, getScoreIsCheckIn, signIn } from './api'
+import { attendance, auth, getBinding, signIn } from './api'
 import { bark, serverChan } from './notifications'
 import { getPrivacyName } from './utils'
-import { SKLAND_BOARD_IDS, SKLAND_BOARD_NAME_MAPPING } from './constant'
 
 interface Options {
   /** server 酱推送功能的启用，false 或者 server 酱的token */
@@ -80,7 +79,6 @@ export async function doAttendanceForAccount(token: string, options: Options) {
     else {
       combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
     }
-
   }))
   if (successAttendance !== 0)
     combineMessage(`成功签到${successAttendance}个角色`)
@@ -93,7 +91,7 @@ export async function doAttendanceForAccount(token: string, options: Options) {
   // await Promise.all(
   //   SKLAND_BOARD_IDS
   //     .map(async (id) => {
-  //       // 过滤已经签到过的 
+  //       // 过滤已经签到过的
   //       const name = SKLAND_BOARD_NAME_MAPPING[id]
   //       if (isCheckIn.data.list.find(i => i.gameId === id)?.checked !== 1) {
   //         const data = await checkIn(cred, signToken, id)

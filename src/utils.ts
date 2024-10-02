@@ -1,6 +1,11 @@
 import { createHash, createHmac } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { Script } from 'node:vm'
+import { JSDOM } from 'jsdom'
 import type { FetchContext } from 'ofetch'
 import { stringifyQuery } from 'ufo'
+import { SKLAND_SM_CONFIG } from './constant'
 
 export const command_header = {
   'User-Agent': 'Skland/1.21.0 (com.hypergryph.skland; build:102100065; iOS 17.6.0; ) Alamofire/5.7.1',
@@ -31,7 +36,7 @@ export function getRequestURL(request: RequestInfo, baseURL?: string) {
   return new URL(url, baseURL)
 }
 
-const WHITE_LIST = ['/api/v1/user/auth/generate_cred_by_code']
+const WHITE_LIST = ['/web/v1/user/auth/generate_cred_by_code']
 
 export function onSignatureRequest(ctx: FetchContext) {
   const { pathname } = getRequestURL(ctx.request, ctx.options.baseURL)
@@ -67,6 +72,31 @@ export function onSignatureRequest(ctx: FetchContext) {
   })
   headers.append('sign', sign)
   headers.delete('token')
-  
+
   ctx.options.headers = headers
+}
+
+export function createDeviceId() {
+  // @ts-expect-error ignore
+  const sdkJsPath = path.resolve(import.meta.dirname, './sm.sdk.js')
+  return new Promise<string>((resolve) => {
+    const dom = new JSDOM(
+      '',
+      {
+        runScripts: 'outside-only',
+        beforeParse(window) {
+          window._smReadyFuncs = [
+            () => {
+              resolve(window.SMSdk.getDeviceId())
+            },
+          ]
+          window._smConf = SKLAND_SM_CONFIG
+        },
+      },
+    )
+
+    const script = new Script(readFileSync(sdkJsPath, 'utf-8'))
+    const vmContext = dom.getInternalVMContext()
+    script.runInNewContext(vmContext)
+  })
 }

@@ -17,7 +17,7 @@ export async function auth(token: string) {
       type: 0,
     }),
   })
-  
+
   if (data.status !== 0 || !data.data)
     throw new Error(`登录获取 cred 错误:${data.msg}`)
 

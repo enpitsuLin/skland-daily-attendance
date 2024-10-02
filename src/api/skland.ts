@@ -1,7 +1,7 @@
 import { createFetch } from 'ofetch'
 import { ProxyAgent } from 'proxy-agent'
 import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
-import { command_header, onSignatureRequest } from '../utils'
+import { command_header, createDeviceId, onSignatureRequest } from '../utils'
 import { SKLAND_BOARD_IDS } from '../constant'
 
 const fetch = createFetch({
@@ -19,10 +19,19 @@ const fetch = createFetch({
  */
 export async function signIn(grant_code: string) {
   const data = await fetch<CredResponse>(
-    '/api/v1/user/auth/generate_cred_by_code',
+    '/web/v1/user/auth/generate_cred_by_code',
     {
       method: 'POST',
-      headers: command_header,
+      headers: {
+        'content-type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+        'referer': 'https://www.skland.com/',
+        'origin': 'https://www.skland.com',
+        'dId': await createDeviceId(),
+        'platform': '3',
+        'timestamp': `${Math.floor(Date.now() / 1000)}`,
+        'vName': '1.0.0',
+      },
       body: {
         code: grant_code,
         kind: 1,
@@ -60,8 +69,8 @@ export async function getScoreIsCheckIn(cred: string, token: string) {
     {
       headers: Object.assign({ token, cred }, command_header),
       query: {
-        gameIds: SKLAND_BOARD_IDS
-      }
+        gameIds: SKLAND_BOARD_IDS,
+      },
     },
   )
   return data

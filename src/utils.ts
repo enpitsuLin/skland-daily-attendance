@@ -1,7 +1,8 @@
 import { createHash, createHmac } from 'node:crypto'
 import { readFileSync } from 'node:fs'
-import path from 'node:path'
+import path, { dirname } from 'node:path'
 import { Script } from 'node:vm'
+import { fileURLToPath } from 'node:url'
 import { JSDOM } from 'jsdom'
 import type { FetchContext } from 'ofetch'
 import { stringifyQuery } from 'ufo'
@@ -77,8 +78,8 @@ export function onSignatureRequest(ctx: FetchContext) {
 }
 
 export function createDeviceId() {
-  // @ts-expect-error ignore
-  const sdkJsPath = path.resolve(import.meta.dirname, './sm.sdk.js')
+  const __dirname = fileURLToPath(dirname(import.meta.url))
+  const sdkJsPath = path.resolve(__dirname, './sm.sdk.js')
   return new Promise<string>((resolve) => {
     const dom = new JSDOM(
       '',

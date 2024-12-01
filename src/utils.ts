@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import type { FetchContext } from 'ofetch'
 import { stringifyQuery } from 'ufo'
 import pako from 'pako'

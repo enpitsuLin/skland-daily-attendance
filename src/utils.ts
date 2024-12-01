@@ -1,10 +1,12 @@
-import crypto from 'node:crypto'
+import { webcrypto } from 'node:crypto'
 import type { FetchContext } from 'ofetch'
 import { stringifyQuery } from 'ufo'
 import pako from 'pako'
 import { format } from 'date-fns'
 import { BROWSER_ENV, DES_RULE, SKLAND_SM_CONFIG } from './constant'
 import { encryptAES, encryptObjectByDESRules, encryptRSA, hmacSha256, md5 } from './crypto'
+
+const crypto = webcrypto
 
 export const command_header = {
   'User-Agent': 'Skland/1.21.0 (com.hypergryph.skland; build:102100065; iOS 17.6.0; ) Alamofire/5.7.1',

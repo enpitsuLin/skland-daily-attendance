@@ -1,5 +1,4 @@
 import { createFetch } from 'ofetch'
-import { ProxyAgent } from 'proxy-agent'
 import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
 import { command_header, getDid, onSignatureRequest } from '../utils'
 import { SKLAND_BOARD_IDS } from '../constant'
@@ -8,8 +7,6 @@ const fetch = createFetch({
   defaults: {
     baseURL: 'https://zonai.skland.com',
     onRequest: onSignatureRequest,
-    // @ts-expect-error ignore
-    agent: new ProxyAgent(),
   },
 })
 

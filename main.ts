@@ -10,3 +10,5 @@ const withServerChan = process.env.SERVERCHAN_SENDKEY
 const withBark = process.env.BARK_URL
 
 await Promise.all(accounts.map(token => doAttendanceForAccount(token, { withServerChan, withBark })))
+
+ 

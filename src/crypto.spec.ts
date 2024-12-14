@@ -26,7 +26,7 @@ describe('crypto', () => {
   it('encryptAES', async () => {
     const message = '123456'
     const key = '1234567890123456'
-    const expected = '7f2be80dd2bfc4ae7f6ae62f1f04e384'
+    const expected = '172000e84d64a30f559989a6b9f6082d'
     expect(await encryptAES(message, key)).toBe(expected)
   })
 

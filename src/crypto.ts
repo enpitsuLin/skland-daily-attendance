@@ -1,5 +1,8 @@
+import { webcrypto } from 'node:crypto'
 import CryptoJS from 'crypto-js'
 import forge from 'node-forge'
+
+const crypto = webcrypto
 
 export async function md5(string: string) {
   return CryptoJS.MD5(string).toString()

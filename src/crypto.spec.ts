@@ -31,8 +31,8 @@ describe('crypto', () => {
 
   it('encryptDES', async () => {
     const message = '123456'
-    const key = '1234567890123456'
-    const expected = 'M59RCYudPds='
+    const key = '12345678'
+    const expected = 'uAoXvewt7nk='
     expect(await encryptDES(message, key)).toBe(expected)
   })
 

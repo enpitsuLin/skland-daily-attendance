@@ -1,6 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { getDid } from "./utils";
-
+import { describe, expect, it } from 'vitest'
+import { getDid } from './utils'
 
 describe('getDid', () => {
   it('should return a valid did', async () => {

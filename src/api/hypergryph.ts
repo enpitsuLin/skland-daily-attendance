@@ -1,6 +1,6 @@
+import type { AuthResponse } from '../types'
 import { ofetch } from 'ofetch'
 import { SKLAND_AUTH_URL } from '../constant'
-import type { AuthResponse } from '../types'
 import { command_header } from '../utils'
 
 /**

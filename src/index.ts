@@ -68,20 +68,24 @@ export async function doAttendanceForAccount(token: string, options: Options) {
           const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到成功${`, 获得了${data.data.awards.map(a => `「${a.resource.name}」${a.count}个`).join(',')}`}`
           combineMessage(msg)
           successAttendance++
-        } else {
-        const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
-        combineMessage(msg, true)
         }
-      } else {
-      combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
+        else {
+          const msg = `${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 签到失败${`, 错误消息: ${data.message}\n\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}`
+          combineMessage(msg, true)
+        }
       }
-    } catch (error: any) {
+      else {
+        combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
+      }
+    }
+    catch (error: any) {
       if (error.response && error.response.status === 403) {
         combineMessage(`${(Number(character.channelMasterId) - 1) ? 'B 服' : '官服'}角色 ${getPrivacyName(character.nickName)} 今天已经签到过了`)
-      } else {
-      combineMessage(`签到过程中出现未知错误: ${error.message}`, true)
-      console.error("发生未知错误，工作流终止。")
-      process.exit(1)
+      }
+      else {
+        combineMessage(`签到过程中出现未知错误: ${error.message}`, true)
+        console.error('发生未知错误，工作流终止。')
+        process.exit(1)
       }
     }
     // 多个角色之间的延时

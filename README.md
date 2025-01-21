@@ -4,13 +4,13 @@
 
 > [!CAUTION]
 > ~~从 2024 年 8 月 13 日起，基于 api 请求的自动签到已全面拉闸，有强烈需求的可以使用 https://github.com/MaaXYZ/MaaAssistantSkland~~
-> 
+>
 > ~~后续如果有逆向解参数或者黑盒调用方式解决风控的自动签到大概率不会开源~~
 > 鹰角解除了方舟每日签到的风控，换来的是登岛检票的接口被风控，可喜可贺可喜可贺，所以本项目准备就不提供登岛检票功能了
 
 ## 使用
 
-### Fork 项目  
+### Fork 项目
 
 点击本仓库右上角 `Fork` 到自己的账号下
 
@@ -29,7 +29,6 @@
 - 支持 server 酱推送每日签到信息，建立名为 `SERVERCHAN_SENDKEY` 的 secret 填入你 server 酱的推送密钥
 
 - 支持 bark 推送每日签到信息，建立名为 `BARK_URL` 的 secret 填入你 bark 的推送地址，例如 `https://api.day.app/xxxxxxxxxx/`，支持自建服务器
-
 
 <details>
   <summary>最终可能有的 secrets 如下</summary>

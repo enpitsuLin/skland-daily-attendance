@@ -1,7 +1,7 @@
-import { createFetch } from 'ofetch'
 import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
-import { command_header, getDid, onSignatureRequest } from '../utils'
+import { createFetch } from 'ofetch'
 import { SKLAND_BOARD_IDS } from '../constant'
+import { command_header, getDid, onSignatureRequest } from '../utils'
 
 const fetch = createFetch({
   defaults: {

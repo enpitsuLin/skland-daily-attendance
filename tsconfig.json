@@ -1,17 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "module": "ESNext",
+    "target": "es2018",
+    "jsx": "preserve",
+    "lib": ["esnext"],
+    "module": "esnext",
     "moduleResolution": "Bundler",
+    "paths": {
+      "@skland-utils/core": ["./packages/core/src"]
+    },
+    "resolveJsonModule": true,
     "strict": true,
-    "allowSyntheticDefaultImports": true
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "main.ts",
-    "src/**/*.ts"
+  "exclude": [
+    "**/dist/**",
+    "**/node_modules/**"
   ]
 }

@@ -1,7 +1,4 @@
-import { webcrypto } from 'node:crypto'
 import * as mima from 'mima-kit'
-
-const crypto = webcrypto
 
 export async function md5(string: string) {
   return mima.md5(mima.UTF8(string)).to(mima.HEX)
@@ -63,36 +60,10 @@ export async function encryptDES(message: string | number, key: string) {
   return cipher.encrypt(mima.UTF8(inputStr)).to(mima.B64)
 }
 
-export interface DESRule {
-  cipher?: string
-  is_encrypt: number
-  key?: string
-  obfuscated_name: string
-}
-
-export async function encryptObjectByDESRules(object: Record<string, string | number>, rules: Record<string, DESRule>) {
-  const result: Record<string, string | number> = {}
-
-  for (const i in object) {
-    if (i in rules) {
-      const rule = rules[i]
-      if (rule.is_encrypt === 1)
-        result[rule.obfuscated_name] = await encryptDES(object[i], rule.key!)
-      else
-        result[rule.obfuscated_name] = object[i]
-    }
-    else {
-      result[i] = object[i]
-    }
-  }
-
-  return result
-}
-
 /**
  * 从PEM格式的公钥中提取RSA参数的n和e (BigInt形式)
  */
-export async function extractJWKFromPEM(publicKeyPEM: string) {
+async function extractJWKFromPEM(publicKeyPEM: string) {
   // 移除PEM头尾和换行，并进行base64解码
   const pemContents = publicKeyPEM
     .replace('-----BEGIN PUBLIC KEY-----', '')
@@ -126,7 +97,7 @@ export async function extractJWKFromPEM(publicKeyPEM: string) {
   }
 }
 
-export function base64URLToBigInt(base64url: string): bigint {
+function base64URLToBigInt(base64url: string): bigint {
   // 1. Base64URL 转 Base64
   const base64 = base64url
     .replace(/-/g, '+')

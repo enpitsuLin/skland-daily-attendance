@@ -18,5 +18,8 @@
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub"
+  },
+  "dependencies": {
+    "mima-kit": "^0.0.16"
   }
 }

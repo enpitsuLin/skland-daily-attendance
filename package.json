@@ -7,7 +7,8 @@
   "scripts": {
     "prepare": "simple-git-hooks",
     "build": "rimraf packages/*/dist --glob && pnpm -r --filter=./packages/* run build",
-    "test": "vitest"
+    "test": "vitest",
+    "attendance": "pnpm -r --filter=./packages/attendance run attendance"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",

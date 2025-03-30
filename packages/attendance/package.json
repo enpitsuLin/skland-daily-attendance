@@ -15,17 +15,8 @@
   },
   "dependencies": {
     "@skland-utils/core": "workspace:*",
-    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "ofetch": "^1.4.1",
-    "pako": "^2.1.0",
-    "tsx": "^4.19.3",
-    "ufo": "^1.5.4"
-  },
-  "devDependencies": {
-    "@types/eslint": "^9.6.1",
-    "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.14",
-    "@types/pako": "^2.0.3"
+    "tsx": "^4.19.3"
   }
 }

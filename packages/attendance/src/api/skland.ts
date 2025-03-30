@@ -1,14 +1,9 @@
 import type { AttendanceResponse, BindingResponse, CredResponse, GetAttendanceResponse, SklandBoard } from '../types'
-import { createFetch } from 'ofetch'
-import { SKLAND_BOARD_IDS } from '../constant'
-import { command_header, getDid, onSignatureRequest } from '../utils'
+import { createClient, generateDeviceID } from '@skland-utils/core'
+import { BROWSER_ENV, DES_RULE, SKLAND_BOARD_IDS, SKLAND_SM_CONFIG } from '../constant'
+import { command_header } from '../utils'
 
-const fetch = createFetch({
-  defaults: {
-    baseURL: 'https://zonai.skland.com',
-    onRequest: onSignatureRequest,
-  },
-})
+const fetch = createClient()
 
 /**
  * grant_code 获得森空岛用户的 token 等信息
@@ -24,7 +19,7 @@ export async function signIn(grant_code: string) {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
         'referer': 'https://www.skland.com/',
         'origin': 'https://www.skland.com',
-        'dId': await getDid(),
+        'dId': await generateDeviceID(SKLAND_SM_CONFIG, BROWSER_ENV, DES_RULE),
         'platform': '3',
         'timestamp': `${Math.floor(Date.now() / 1000)}`,
         'vName': '1.0.0',

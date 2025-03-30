@@ -20,6 +20,10 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "mima-kit": "^0.0.16"
+    "date-fns": "^4.1.0",
+    "defu": "^6.1.4",
+    "mima-kit": "^0.0.16",
+    "ofetch": "^1.4.1",
+    "ufo": "^1.5.4"
   }
 }

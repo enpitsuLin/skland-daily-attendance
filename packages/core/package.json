@@ -1,0 +1,11 @@
+{
+  "name": "@skland-daily-attendance/core",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "mima-kit": "^0.0.16",
+    "ofetch": "^1.4.1",
+    "ufo": "^1.6.1"
+  }
+}

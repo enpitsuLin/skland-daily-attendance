@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import process from 'node:process'
-import { doAttendanceForAccount } from './src'
+import { doAttendanceForAccount } from '@skland-daily-attendance/core'
 import 'dotenv/config'
 
 assert(typeof process.env.SKLAND_TOKEN === 'string')

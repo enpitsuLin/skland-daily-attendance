@@ -15,12 +15,9 @@
     "test": "vitest"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
+    "@skland-daily-attendance/core": "workspace:*",
     "dotenv": "^16.5.0",
-    "mima-kit": "^0.0.16",
-    "ofetch": "^1.4.1",
-    "tsx": "^4.19.3",
-    "ufo": "^1.6.1"
+    "tsx": "^4.19.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.12.0",

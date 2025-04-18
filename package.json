@@ -12,7 +12,8 @@
     "attendance": "tsx main.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest"
+    "test": "vitest",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "@skland-daily-attendance/core": "workspace:*",
@@ -24,7 +25,15 @@
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.14.1",
     "eslint": "^9.24.0",
+    "lint-staged": "^15.5.1",
+    "simple-git-hooks": "^2.12.1",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }

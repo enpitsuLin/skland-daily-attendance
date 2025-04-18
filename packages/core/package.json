@@ -2,10 +2,28 @@
   "name": "@skland-daily-attendance/core",
   "type": "module",
   "private": true,
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "prepack": "unbuild"
+  },
   "dependencies": {
     "date-fns": "^4.1.0",
     "mima-kit": "^0.0.16",
     "ofetch": "^1.4.1",
     "ufo": "^1.6.1"
+  },
+  "devDependencies": {
+    "unbuild": "^3.5.0"
   }
 }

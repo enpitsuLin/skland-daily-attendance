@@ -64,7 +64,7 @@ export async function doAttendanceForAccount(token: string, options: Options) {
 
   addMessage('## 明日方舟签到')
   let successAttendance = 0
-  const characterList = list.map(i => i.bindingList).flat()
+  const characterList = list.filter(i => i.appCode === 'arknights').map(i => i.bindingList).flat()
   const maxRetries = parseInt(process.env.MAX_RETRIES, 10) || 3 // 添加最大重试次数
   await Promise.all(characterList.map(async (character) => {
     console.log(`将签到第${successAttendance + 1}个角色`)

@@ -1,7 +1,4 @@
-import { webcrypto } from 'node:crypto'
 import * as mima from 'mima-kit'
-
-const crypto = webcrypto
 
 export async function md5(string: string) {
   return mima.md5(mima.UTF8(string)).to(mima.HEX)
@@ -118,7 +115,7 @@ export async function extractJWKFromPEM(publicKeyPEM: string) {
   )
 
   // 导出为JWK格式
-  const jwk = await crypto.subtle.exportKey('jwk', cryptoKey)
+  const jwk = await crypto.subtle.exportKey('jwk', cryptoKey) as JsonWebKey
 
   return {
     n: base64URLToBigInt(jwk.n!),

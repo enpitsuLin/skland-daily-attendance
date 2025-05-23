@@ -1,0 +1,16 @@
+{
+  "name": "@skland-x/node",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@skland-x/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "vitest": "^3.1.4"
+  }
+}

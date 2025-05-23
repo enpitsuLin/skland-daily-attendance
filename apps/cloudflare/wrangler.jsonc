@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "skland-daily-attendance",
+  "compatibility_date": "2025-04-04",
+  "main": "./workers/app.ts",
+  "observability": {
+    "enabled": true
+  },
+  "triggers": {
+    "crons": [
+      "0 16 * * *"
+    ]
+  }
+}

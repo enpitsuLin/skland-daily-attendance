@@ -39,7 +39,7 @@ jobs:
         run: pnpm install
 
       - name: Run daily attendance
-        run: pnpm attendance
+        run: pnpm -C "./apps/node" start
         env:
           SKLAND_TOKEN: ${{ secrets.SKLAND_TOKEN }}
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}

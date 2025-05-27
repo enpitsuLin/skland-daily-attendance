@@ -2,7 +2,11 @@ import assert from 'node:assert'
 import process from 'node:process'
 import { doAttendanceForAccount } from './attendance'
 
-process.loadEnvFile('.env')
+try {
+  process.loadEnvFile('.env')
+} catch {
+  // ignore, dotenv 基本只适用于本地开发
+}
 
 assert(typeof process.env.SKLAND_TOKEN === 'string', 'SKLAND_TOKEN 未设置')
 

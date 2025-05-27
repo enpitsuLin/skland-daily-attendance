@@ -13,6 +13,14 @@ Node.js 环境运行的森空岛自动签到服务，可以使用 Github Action 
 
 ## 配置
 
+### 获取凭据
+
+登录 [森空岛网页版](https://www.skland.com/) 后，打开 https://web-api.skland.com/account/info/hg 记下 content 字段的值
+
+或者登录 [鹰角网络通行证](https://user.hypergryph.com/login) 后打开 https://web-api.hypergryph.com/account/info/hg 记下 content 字段的值
+
+### 添加至仓库 Secrets
+
 在 Fork 的仓库中，进入 Settings -> Secrets and variables -> Actions -> New repository secret
 
 建立名为 `SKLAND_TOKEN` 的 secret，值为上一步获取 content，最后点击 Add secret，如果需要多账号支持，请使用半角逗号`,`分割

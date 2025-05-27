@@ -16,7 +16,7 @@
 本项目提供两种部署方式，请根据个人需求选择：
 
 1. [Cloudflare Workers 版本](./apps/cloudflare/README.md)
-2. [GitHub Actions 版本](./.github/workflows/README.md)
+2. [GitHub Actions 版本](./apps/node//README.md)
 
 
 ## 注意事项

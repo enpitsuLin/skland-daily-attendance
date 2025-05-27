@@ -2,7 +2,7 @@
 
 使用 Cloudflare Workers 部署的森空岛自动签到服务，可以通过下面的按钮一键部署。
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance/tree/refactor/worker/apps/cloudflare)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance)
 
 ## 特点
 
@@ -18,9 +18,3 @@
 
 > [!NOTE]
 > Work in Progress
-
-如果通过一键部署按钮，你应该会看到类似下面的界面
-
-![Image](https://github.com/user-attachments/assets/15931e4d-fe25-4c83-ba1f-02d7f4b024ca)
-
-点击下面的根目录选项展开后填入 `apps/cloudflare`

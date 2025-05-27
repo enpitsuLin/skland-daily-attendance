@@ -125,16 +125,14 @@ async function getArknightsCharacterList(cred: string, signToken: string) {
 
 async function checkUserBindingsAllAttended(userId: string) {
   const { config, storage, today } = useContext()
-  const bindings = await storage.getItem<string>(`${config.BINDINGS_STORAGE_PREFIX}${userId}`)
+  const bindings = await storage.getItem<string[]>(`${config.BINDINGS_STORAGE_PREFIX}${userId}`)
 
   if (!bindings) {
     return false
   }
-
-  const bindingsList = bindings.split(',')
   const date = format(today, 'yyyy-MM-dd')
 
-  for (const binding of bindingsList) {
+  for (const binding of bindings) {
     const key = `${config.ATTENDANCE_STORAGE_PREFIX}${date}:${binding}`
     const isAttended = await storage.getItem(key)
     if (!isAttended) {
@@ -202,7 +200,7 @@ export default {
         const characterList = await retry(() => getArknightsCharacterList(cred, signToken))
         await storage.setItem(
           `${config.BINDINGS_STORAGE_PREFIX}${userId}`,
-          characterList.map(i => i.uid).join(','),
+          characterList.map(i => i.uid.toString())
         )
 
         console.log(`账号 ${index + 1} 共有 ${characterList.length} 个角色需要签到`)
@@ -235,6 +233,7 @@ export default {
     }
 
     await cleanOutdatedData()
+    context.unset()
     console.log('签到任务完成')
   },
 } satisfies ExportedHandler<Env>

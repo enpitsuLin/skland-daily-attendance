@@ -10,5 +10,8 @@
       "binding": "KV",
       "id": "f67ae953026845daa1a25cef8cf8de36"
     }
-  ]
+  ],
+  "triggers": {
+    "crons": ["30 0/2 * * *"]
+  }
 }

@@ -17,11 +17,23 @@
 
 ## 配置
 
-### 获取凭据
+### 1. 获取凭据
 
 登录 [森空岛网页版](https://www.skland.com/) 后，打开 https://web-api.skland.com/account/info/hg 记下 content 字段的值
 
 或者登录 [鹰角网络通行证](https://user.hypergryph.com/login) 后打开 https://web-api.hypergryph.com/account/info/hg 记下 content 字段的值
+
+### 2. 设置消息通知方式 (可选)
+
+通过 [Statocysts](https://github.com/enpitsuLin/statocysts) 支持等多种通知方式，只需要将对应格式的通知 URL 设置到环境变量中即可。
+
+### 3. 设置所需环境变量
+
+| 环境变量                 | 描述                              |
+| ------------------------ | --------------------------------- |
+| SKLAND_TOKENS            | 森空岛凭据，多个凭据用逗号分隔    |
+| SKLAND_NOTIFICATION_URLS | 消息通知 URL，多个 URL 用逗号分隔 |
+| SKLAND_MAX_RETRIES       | 最大重试次数，默认 3              |
 
 ## 注意事项
 

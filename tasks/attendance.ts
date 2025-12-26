@@ -1,8 +1,9 @@
 import type { AttendanceResult } from '~/utils/index'
 import { useRuntimeConfig } from 'nitro/runtime-config'
+import { useStorage } from 'nitro/storage'
 import { defineTask } from 'nitro/task'
 import { createClient } from 'skland-kit'
-import { attendCharacter, createMessageCollector, getSplitByComma } from '~/utils/index'
+import { attendCharacter, createMessageCollector, generateAttendanceKey, getSplitByComma } from '~/utils/index'
 
 export default defineTask<'success' | 'failed'>({
   meta: {
@@ -16,6 +17,8 @@ export default defineTask<'success' | 'failed'>({
     if (tokens.length === 0) {
       return { result: 'success' }
     }
+
+    const storage = useStorage()
 
     const notificationUrls = getSplitByComma(config.notificationUrls)
 
@@ -31,6 +34,15 @@ export default defineTask<'success' | 'failed'>({
 
     try {
       for (const [index, token] of tokens.entries()) {
+        // Check if already attended today
+        const attendanceKey = await generateAttendanceKey(token)
+        const hasAttended = await storage.getItem(attendanceKey)
+
+        if (hasAttended) {
+          messageCollector.log(`第 ${index + 1}/${tokens.length} 个账号今天已经签到过，跳过`)
+          continue
+        }
+
         messageCollector.log(`开始处理第 ${index + 1}/${tokens.length} 个账号`)
         const client = createClient()
         const { code } = await client.collections.hypergryph.grantAuthorizeCode(token)
@@ -39,10 +51,19 @@ export default defineTask<'success' | 'failed'>({
         const { list } = await client.collections.player.getBinding()
         const characterList = list.filter(i => i.appCode === 'arknights').flatMap(i => i.bindingList)
 
+        let accountHasError = false
         for (const character of characterList) {
           const result = await attendCharacter(client, character, maxRetries)
           results.push(result)
           messageCollector.log(result.message, result.hasError)
+          if (result.hasError) {
+            accountHasError = true
+          }
+        }
+
+        // Save attendance status only if all characters succeeded
+        if (!accountHasError) {
+          await storage.setItem(attendanceKey, true)
         }
       }
 

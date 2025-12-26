@@ -15,86 +15,9 @@
 
 基于 Nitro 构建，使用 Scheduled Tasks 实现定时任务来签到，查看 [Nitro 文档](https://nitro.build/guide/tasks#platform-support) 了解支持的平台。
 
-### Docker 部署
+#### 快速部署到 Cloudflare Workers
 
-本项目提供了 Docker 和 Docker Compose 配置，方便快速部署。
-
-#### 使用 Docker Compose (推荐)
-
-1. 创建 `.env` 文件并配置环境变量：
-
-```bash
-# 必填：森空岛凭据，多个用逗号分隔
-SKLAND_TOKENS=your-token-1,your-token-2
-
-# 可选：通知 URL
-SKLAND_NOTIFICATION_URLS=your-notification-url
-
-# 可选：最大重试次数 (默认为 3)
-SKLAND_MAX_RETRIES=3
-
-# 可选：持久化存储配置 (使用 Upstash Redis)
-# KV_REST_API_URL=https://your-upstash-redis.upstash.io
-# KV_REST_API_TOKEN=your-token
-
-# 可选：使用 Redis
-# REDIS_URL=rediss://default:password@your-redis-host:6379
-
-# 可选：使用 AWS S3 兼容存储
-# S3_ACCESS_KEY_ID=your-access-key
-# S3_SECRET_ACCESS_KEY=your-secret-key
-# S3_BUCKET=your-bucket-name
-# S3_REGION=us-east-1
-# S3_ENDPOINT=https://your-s3-endpoint.com
-
-# 可选：禁用持久化存储
-# DISABLE_KV=false
-```
-
-2. 启动服务：
-
-```bash
-docker compose up -d
-```
-
-3. 查看日志：
-
-```bash
-docker compose logs -f
-```
-
-4. 停止服务：
-
-```bash
-docker compose down
-```
-
-#### 使用 Docker
-
-1. 构建镜像：
-
-```bash
-docker build -t skland-attendance .
-```
-
-2. 运行容器：
-
-```bash
-docker run -d \
-  --name skland-attendance \
-  --restart unless-stopped \
-  -e SKLAND_TOKENS="your-token-1,your-token-2" \
-  -e SKLAND_NOTIFICATION_URLS="your-notification-url" \
-  -v $(pwd)/data:/app/.data \
-  skland-attendance
-```
-
-#### Docker 部署注意事项
-
-- 默认使用本地文件存储，数据会持久化到 `./data` 目录
-- 如果需要使用 Redis 持久化，可以取消注释 `docker-compose.yml` 中的 Redis 服务配置
-- 容器会按照 `nitro.config.ts` 中配置的定时任务自动执行签到 (默认每 2 小时执行一次)
-- 如需调整定时任务频率，请修改 `nitro.config.ts` 中的 `scheduledTasks` 配置后重新构建镜像
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance)
 
 ### 配置
 
@@ -195,6 +118,94 @@ DISABLE_KV=true
 ```bash
 SKLAND_MAX_RETRIES=5
 ```
+
+### Docker 部署
+
+本项目提供了 Docker 和 Docker Compose 配置，方便快速部署。
+
+<details>
+  <summary>Docker 部署</summary>
+
+  #### 使用 Docker Compose (推荐)
+
+  1. 创建 `.env` 文件并配置环境变量：
+
+  ```bash
+  # 必填：森空岛凭据，多个用逗号分隔
+  SKLAND_TOKENS=your-token-1,your-token-2
+
+  # 可选：通知 URL
+  SKLAND_NOTIFICATION_URLS=your-notification-url
+
+  # 可选：最大重试次数 (默认为 3)
+  SKLAND_MAX_RETRIES=3
+
+  # 可选：持久化存储配置 (使用 Upstash Redis)
+  # KV_REST_API_URL=https://your-upstash-redis.upstash.io
+  # KV_REST_API_TOKEN=your-token
+
+  # 可选：使用 Redis
+  # REDIS_URL=rediss://default:password@your-redis-host:6379
+
+  # 可选：使用 AWS S3 兼容存储
+  # S3_ACCESS_KEY_ID=your-access-key
+  # S3_SECRET_ACCESS_KEY=your-secret-key
+  # S3_BUCKET=your-bucket-name
+  # S3_REGION=us-east-1
+  # S3_ENDPOINT=https://your-s3-endpoint.com
+
+  # 可选：禁用持久化存储
+  # DISABLE_KV=false
+  ```
+
+  2. 启动服务：
+
+  ```bash
+  docker compose up -d
+  ```
+
+  3. 查看日志：
+
+  ```bash
+  docker compose logs -f
+  ```
+
+  4. 停止服务：
+
+  ```bash
+  docker compose down
+  ```
+
+  #### 使用 Docker
+
+  1. 构建镜像：
+
+  ```bash
+  docker build -t skland-attendance .
+  ```
+
+  2. 运行容器：
+
+  ```bash
+  docker run -d \
+    --name skland-attendance \
+    --restart unless-stopped \
+    -e SKLAND_TOKENS="your-token-1,your-token-2" \
+    -e SKLAND_NOTIFICATION_URLS="your-notification-url" \
+    -v $(pwd)/data:/app/.data \
+    skland-attendance
+  ```
+
+  #### Docker 部署注意事项
+
+  - 默认使用本地文件存储，数据会持久化到 `./data` 目录
+  - 如果需要使用 Redis 持久化，可以取消注释 `docker-compose.yml` 中的 Redis 服务配置
+  - 容器会按照 `nitro.config.ts` 中配置的定时任务自动执行签到 (默认每 2 小时执行一次)
+  - 如需调整定时任务频率，请修改 `nitro.config.ts` 中的 `scheduledTasks` 配置后重新构建镜像
+
+</details>
+
+
 
 ## 注意事项
 

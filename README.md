@@ -15,6 +15,14 @@
 
 基于 Nitro 构建，使用 Scheduled Tasks 实现定时任务来签到，查看 [Nitro 文档](https://nitro.unjs.io/guide/scheduled-tasks) 了解支持的平台。
 
+## 配置
+
+### 获取凭据
+
+登录 [森空岛网页版](https://www.skland.com/) 后，打开 https://web-api.skland.com/account/info/hg 记下 content 字段的值
+
+或者登录 [鹰角网络通行证](https://user.hypergryph.com/login) 后打开 https://web-api.hypergryph.com/account/info/hg 记下 content 字段的值
+
 ## 注意事项
 
 - 本项目仅用于学习和研究目的

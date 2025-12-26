@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "skland-kit": "catalog:lib",
-    "statocysts": "catalog:lib"
+    "statocysts": "catalog:lib",
+    "unstorage": "catalog:lib"
   },
   "devDependencies": {
     "@actions/core": "catalog:dev",

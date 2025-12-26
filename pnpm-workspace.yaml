@@ -18,5 +18,6 @@ catalogs:
   lib:
     skland-kit: ^0.1.5
     statocysts: ^0.9.1
+    unstorage: ^2.0.0-alpha.4
   types:
     '@types/node': ^25.0.3

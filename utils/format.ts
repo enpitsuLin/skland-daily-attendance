@@ -13,12 +13,11 @@ export function formatPrivacyName(nickName: string) {
   if (!name)
     throw new Error('Unexpected Error: nickName is not valid')
 
-  if (name.length <= 2)
+  if (name.length <= 1)
     return nickName
 
   const firstChar = name[0]
-  const lastChar = name[name.length - 1]
-  const stars = '*'.repeat(name.length - 2)
+  const stars = '*'.repeat(name.length - 1)
 
-  return `${firstChar}${stars}${lastChar}#${number}`
+  return `${firstChar}${stars}#${number}`
 }

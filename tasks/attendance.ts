@@ -2,7 +2,7 @@ import type { AttendanceResult } from '~/utils/index'
 import { useRuntimeConfig } from 'nitro/runtime-config'
 import { defineTask } from 'nitro/task'
 import { createClient } from 'skland-kit'
-import { attendCharacter, createMessageCollector } from '~/utils/index'
+import { attendCharacter, createMessageCollector, getSplitByComma } from '~/utils/index'
 
 export default defineTask<'success' | 'failed'>({
   meta: {
@@ -12,12 +12,12 @@ export default defineTask<'success' | 'failed'>({
   async run() {
     const config = useRuntimeConfig()
 
-    const tokens = config.tokens.split(',')
+    const tokens = getSplitByComma(config.tokens)
     if (tokens.length === 0) {
       return { result: 'success' }
     }
 
-    const notificationUrls = config.notificationUrls ? config.notificationUrls.split(',') : []
+    const notificationUrls = getSplitByComma(config.notificationUrls)
 
     const messageCollector = createMessageCollector({
       notificationUrls,

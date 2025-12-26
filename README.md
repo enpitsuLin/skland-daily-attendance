@@ -17,7 +17,7 @@
 
 #### 快速部署到 Cloudflare Workers
 
-通过一键部署到 Cloudflare Workers，只需要[配置对应的环境变量](#配置)即可
+通过一键部署到 Cloudflare Workers，只需要[配置对应的环境变量](#手动部署需要的配置)即可
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance)
 

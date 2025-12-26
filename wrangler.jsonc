@@ -2,11 +2,6 @@
   "$schema": "https://cdn.jsdelivr.net/npm/wrangler@4.54.0/config-schema.json",
   "compatibility_date": "2025-12-26",
   "name": "skland-daily-attendance",
-  "vars": {
-    "SKLAND_TOKENS": "",
-    "SKLAND_NOTIFICATION_URLS": "",
-    "SKLAND_MAX_RETRIES": "3"
-  },
   "kv_namespaces": [
     {
       "binding": "KV"

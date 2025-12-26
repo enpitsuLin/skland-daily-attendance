@@ -1,3 +1,20 @@
-packages:
-  - packages/*
-  - apps/*
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
+trustPolicyExclude:
+  - chokidar@4.0.3
+catalogs:
+  build:
+    rolldown: 1.0.0-beta.57
+  dev:
+    '@antfu/eslint-config': ^6.7.3
+    eslint: ^9.39.2
+    nitro: 3.0.1-alpha.1
+    typescript: ^5.9.3
+    wait-on: ^9.0.3
+  lib:
+    skland-kit: ^0.1.5
+    statocysts: ^0.9.1
+  types:
+    '@types/node': ^25.0.3

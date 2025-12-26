@@ -1,21 +1,30 @@
 {
-  "name": "skland-x",
+  "name": "skland-daily-attendance",
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.11.0",
-  "description": "",
-  "author": "",
+  "packageManager": "pnpm@10.26.2",
+  "description": "森空岛每日签到",
   "license": "MIT",
   "scripts": {
+    "build": "nitro build",
+    "dev": "nitro dev",
+    "preview": "node .output/server/index.mjs",
+    "action": "node scripts/action.mjs",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "build": "pnpm --filter \"./packages/*\" build",
-    "prepare": "pnpm build"
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "skland-kit": "catalog:lib",
+    "statocysts": "catalog:lib"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.13.2",
-    "eslint": "^9.27.0",
-    "typescript": "^5.8.3"
+    "@antfu/eslint-config": "catalog:dev",
+    "@types/node": "catalog:types",
+    "eslint": "catalog:dev",
+    "nitro": "catalog:dev",
+    "rolldown": "catalog:build",
+    "typescript": "catalog:dev",
+    "wait-on": "catalog:dev"
   }
 }

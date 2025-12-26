@@ -19,7 +19,7 @@
     "statocysts": "catalog:lib"
   },
   "devDependencies": {
-    "@actions/core": "catalog:",
+    "@actions/core": "catalog:dev",
     "@antfu/eslint-config": "catalog:dev",
     "@types/node": "catalog:types",
     "eslint": "catalog:dev",

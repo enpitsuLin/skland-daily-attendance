@@ -6,13 +6,9 @@ on:
   workflow_dispatch:
   workflow_call:
     secrets:
-      SKLAND_TOKEN:
+      SKLAND_TOKENS:
         required: true
-      SERVERCHAN_SENDKEY:
-        required: false
-      BARK_URL:
-        required: false
-      MESSAGE_PUSHER_URL:
+      SKLAND_NOTIFICATION_URLS:
         required: false
       MAX_RETRIES:
         required: false
@@ -61,6 +57,6 @@ jobs:
       - name: Run daily attendance
         run: pnpm action
         env:
-          SKLAND_TOKENS: ${{ secrets.SKLAND_TOKEN }}
-          SKLAND_NOTIFICATION_URLS: ${{ secrets.SERVERCHAN_SENDKEY }}
+          SKLAND_TOKENS: ${{ secrets.SKLAND_TOKENS }}
+          SKLAND_NOTIFICATION_URLS: ${{ secrets.SKLAND_NOTIFICATION_URLS }}
           SKLAND_MAX_RETRIES: ${{ secrets.MAX_RETRIES }}

@@ -17,9 +17,65 @@
 
 #### 快速部署到 Cloudflare Workers
 
+通过一键部署到 Cloudflare Workers，只需要[配置对应的环境变量](#配置)即可
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance)
 
-### 配置
+#### GitHub Actions 部署
+
+通过 GitHub Actions 可以实现自动定时签到，无需额外的服务器资源。
+
+<details>
+  <summary>Github Action 部署</summary>
+
+  ##### 快速开始
+
+  1. **Fork 本仓库**
+
+     点击页面右上角的 Fork 按钮，将仓库 fork 到你的账号下。
+
+  2. **配置 GitHub Secrets**
+
+     进入你 fork 的仓库，依次点击 `Settings` → `Secrets and variables` → `Actions` → `New repository secret`，添加以下必要的密钥：
+
+     | Secret 名称 | 说明 | 是否必填 |
+     |------------|------|---------|
+     | `SKLAND_TOKENS` | 森空岛凭据，多个账号用逗号分隔 | 必填 |
+     | `SKLAND_NOTIFICATION_URLS` | 通知 URL，多个 URL 用逗号分隔 | 可选 |
+     | `MAX_RETRIES` | 最大重试次数，默认为 3 | 可选 |
+
+  3. **启用 GitHub Actions**
+
+     进入仓库的 `Actions` 标签页，如果看到提示，点击 `I understand my workflows, go ahead and enable them` 启用工作流。
+
+  4. **执行签到**
+
+     GitHub Actions 会在每天 16:00 (UTC) 自动执行签到任务。你也可以手动触发：
+
+     - 进入 `Actions` 标签页
+     - 选择 `attendance` 工作流
+     - 点击右侧的 `Run workflow` 按钮
+     - 点击绿色的 `Run workflow` 确认执行
+
+  ##### 工作流说明
+
+  - **attendance** (`.github/workflows/schedule.yml`)
+    - 自动签到工作流，每天 16:00 (UTC) 定时执行
+    - 支持手动触发和通过 `workflow_call` 被其他工作流调用
+
+  - **自动push防止Actions自动停止** (`.github/workflows/auto_push.yml`)
+    - 保活工作流，每月 1 号和 15 号自动创建空提交并推送
+    - 防止仓库长期无活动导致 GitHub Actions 被自动停用
+
+</details>
+
+##### 注意事项
+
+- GitHub Actions 免费额度为每月 2000 分钟，本项目的签到任务约消耗 1-2 分钟/次
+- 确保仓库为 Public 或拥有 GitHub Actions 的私有仓库配额
+- 如果长时间（60天）没有任何提交，GitHub 会自动停用 Actions，保活工作流会自动处理这个问题。（会带来额外的 commit 可能会导致与上游仓库无法及时同步）
+
+### 手动部署需要的配置
 
 #### 1. 配置凭据
 
@@ -204,8 +260,6 @@ SKLAND_MAX_RETRIES=5
   - 如需调整定时任务频率，请修改 `nitro.config.ts` 中的 `scheduledTasks` 配置后重新构建镜像
 
 </details>
-
-
 
 ## 注意事项
 

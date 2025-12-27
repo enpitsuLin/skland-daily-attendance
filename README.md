@@ -91,7 +91,7 @@ SKLAND_TOKENS=your-token-1,your-token-2
 
 #### 2. 配置消息通知 (可选)
 
-通过 [Statocysts](https://github.com/enpitsuLin/statocysts) 支持等多种通知方式，将对应格式的通知 URL 设置到环境变量 `SKLAND_NOTIFICATION_URLS` 中，多个 URL 用逗号分隔。
+通过 [Statocysts](https://github.com/octoplorer/statocysts) 支持等多种通知方式，将对应格式的通知 URL 设置到环境变量 `SKLAND_NOTIFICATION_URLS` 中，多个 URL 用逗号分隔。
 
 ```bash
 SKLAND_NOTIFICATION_URLS="Statocysts 格式通知 URL"

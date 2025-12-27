@@ -31,39 +31,48 @@ export default defineTask<'success' | 'failed'>({
     const maxRetries = Number(config.maxRetries)
 
     const results: AttendanceResult[] = []
+    let hasFailed = false
 
     try {
       for (const [index, token] of tokens.entries()) {
-        // Check if already attended today
-        const attendanceKey = await generateAttendanceKey(token)
-        const hasAttended = await storage.getItem(attendanceKey)
+        try {
+          // Check if already attended today
+          const attendanceKey = await generateAttendanceKey(token)
+          const hasAttended = await storage.getItem(attendanceKey)
 
-        if (hasAttended) {
-          messageCollector.log(`第 ${index + 1}/${tokens.length} 个账号今天已经签到过，跳过`)
-          continue
-        }
+          if (hasAttended) {
+            messageCollector.log(`第 ${index + 1}/${tokens.length} 个账号今天已经签到过，跳过`)
+            continue
+          }
 
-        messageCollector.log(`开始处理第 ${index + 1}/${tokens.length} 个账号`)
-        const client = createClient()
-        const { code } = await client.collections.hypergryph.grantAuthorizeCode(token)
-        await client.signIn(code)
+          messageCollector.log(`开始处理第 ${index + 1}/${tokens.length} 个账号`)
+          const client = createClient()
+          const { code } = await client.collections.hypergryph.grantAuthorizeCode(token)
+          await client.signIn(code)
 
-        const { list } = await client.collections.player.getBinding()
-        const characterList = list.filter(i => i.appCode === 'arknights').flatMap(i => i.bindingList)
+          const { list } = await client.collections.player.getBinding()
+          const characterList = list.filter(i => i.appCode === 'arknights').flatMap(i => i.bindingList)
 
-        let accountHasError = false
-        for (const character of characterList) {
-          const result = await attendCharacter(client, character, maxRetries)
-          results.push(result)
-          messageCollector.log(result.message, result.hasError)
-          if (result.hasError) {
-            accountHasError = true
+          let accountHasError = false
+          for (const character of characterList) {
+            const result = await attendCharacter(client, character, maxRetries)
+            results.push(result)
+            messageCollector.log(result.message, result.hasError)
+            if (result.hasError) {
+              accountHasError = true
+              hasFailed = true
+            }
+          }
+
+          // Save attendance status only if all characters succeeded
+          if (!accountHasError) {
+            await storage.setItem(attendanceKey, true)
           }
         }
-
-        // Save attendance status only if all characters succeeded
-        if (!accountHasError) {
-          await storage.setItem(attendanceKey, true)
+        catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          messageCollector.log(`第 ${index + 1}/${tokens.length} 个账号处理失败: ${errorMessage}`, true)
+          hasFailed = true
         }
       }
 
@@ -73,7 +82,7 @@ export default defineTask<'success' | 'failed'>({
         messageCollector.log(`成功签到 ${successCount} 个角色`)
       }
 
-      return { result: 'success' }
+      return { result: hasFailed ? 'failed' : 'success' }
     }
     catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)

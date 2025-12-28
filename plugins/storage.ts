@@ -1,5 +1,4 @@
 /* eslint-disable node/prefer-global/process */
-import type { NitroRuntimeConfig } from 'nitro/types'
 import type { Driver } from 'unstorage'
 import type { KVOptions } from 'unstorage/drivers/cloudflare-kv-binding'
 import type { FSStorageOptions } from 'unstorage/drivers/fs-lite'
@@ -7,7 +6,6 @@ import type { RedisOptions } from 'unstorage/drivers/redis'
 import type { S3DriverOptions } from 'unstorage/drivers/s3'
 import type { UpstashOptions } from 'unstorage/drivers/upstash'
 import { definePlugin } from 'nitro'
-import { useRuntimeConfig } from 'nitro/runtime-config'
 import { useStorage } from 'nitro/storage'
 
 interface UpstashKVConfig extends UpstashOptions {
@@ -36,7 +34,7 @@ interface FSLiteKVConfig extends FSStorageOptions {
 
 type ResolvedKVConfig = UpstashKVConfig | RedisKVConfig | S3KVConfig | CloudflareKVConfig | DenoKVConfig | FSLiteKVConfig
 
-function resolveKVConfig(config: NitroRuntimeConfig): ResolvedKVConfig | false {
+function resolveKVConfig(): ResolvedKVConfig | false {
   if (process.env.DISABLE_KV)
     return false
 
@@ -68,7 +66,7 @@ function resolveKVConfig(config: NitroRuntimeConfig): ResolvedKVConfig | false {
   }
 
   // Cloudflare KV
-  if (config.hosting?.includes('cloudflare')) {
+  if (import.meta.preset?.includes('cloudflare')) {
     return {
       driver: 'cloudflare-kv-binding',
       binding: 'KV',
@@ -76,7 +74,7 @@ function resolveKVConfig(config: NitroRuntimeConfig): ResolvedKVConfig | false {
   }
 
   // Deno KV
-  if (config.hosting?.includes('deno')) {
+  if (import.meta.preset?.includes('deno')) {
     return {
       driver: 'deno-kv',
     } as ResolvedKVConfig
@@ -122,9 +120,7 @@ function getDriver(config: ResolvedKVConfig): Promise<Driver> {
 }
 
 export default definePlugin(async () => {
-  const config = useRuntimeConfig()
-
-  const kvConfig = resolveKVConfig(config)
+  const kvConfig = resolveKVConfig()
   if (!kvConfig) {
     return
   }

@@ -78,7 +78,13 @@ async function processAccount(
   let accountHasError = false
   for (const character of characterList) {
     const result = await attendCharacter(client, character, maxRetries)
-    messageCollector.log(result.message, result.hasError)
+
+    if (result.hasError) {
+      messageCollector.error(result.message)
+    }
+    else {
+      messageCollector.log(result.message)
+    }
 
     // Collect character statistics
     if (result.hasError) {
@@ -116,11 +122,6 @@ export default defineTask<'success' | 'failed'>({
     const config = useRuntimeConfig()
 
     const tokens = getSplitByComma(config.tokens)
-    if (tokens.length === 0) {
-      return { result: 'success' }
-    }
-
-    const storage = useStorage()
 
     const notificationUrls = getSplitByComma(config.notificationUrls)
 
@@ -128,7 +129,14 @@ export default defineTask<'success' | 'failed'>({
       notificationUrls,
     })
 
-    messageCollector.log('## 明日方舟签到')
+    if (tokens.length === 0) {
+      messageCollector.log('未配置任何账号，跳过签到任务')
+      return { result: 'success' }
+    }
+
+    const storage = useStorage()
+
+    messageCollector.collect('## 明日方舟签到')
 
     const maxRetries = Number(config.maxRetries)
 
@@ -176,7 +184,7 @@ export default defineTask<'success' | 'failed'>({
           const { stats, messageCollector } = useAttendanceContext()
           const errorMessage = error instanceof Error ? error.message : String(error)
           messageCollector.log(`\n--- 账号 ${accountNumber}/${tokens.length} ---`)
-          messageCollector.log(`处理失败: ${errorMessage}`, true)
+          messageCollector.collect(`处理失败: ${errorMessage}`, { output: true, isError: true })
           hasFailed = true
           stats.accounts.failed++
           stats.accounts.failedIndexes.push(accountNumber)
@@ -185,21 +193,21 @@ export default defineTask<'success' | 'failed'>({
     })
 
     // Output execution summary
-    messageCollector.log(`\n========== 执行摘要 ==========`)
-    messageCollector.log(`账号统计:`)
-    messageCollector.log(`  • 总数: ${stats.accounts.total}`)
-    messageCollector.log(`  • 成功: ${stats.accounts.successful}`)
-    messageCollector.log(`  • 跳过: ${stats.accounts.skipped}`)
+    messageCollector.collect(`\n========== 执行摘要 ==========`)
+    messageCollector.collect(`账号统计:`)
+    messageCollector.collect(`  • 总数: ${stats.accounts.total}`)
+    messageCollector.collect(`  • 成功: ${stats.accounts.successful}`)
+    messageCollector.collect(`  • 跳过: ${stats.accounts.skipped}`)
     if (stats.accounts.failed > 0) {
-      messageCollector.log(`  • 失败: ${stats.accounts.failed} (账号 #${stats.accounts.failedIndexes.join(', #')})`, true)
+      messageCollector.collect(`  • 失败: ${stats.accounts.failed} (账号 #${stats.accounts.failedIndexes.join(', #')})`, { isError: true })
     }
 
-    messageCollector.log(`\n角色统计:`)
-    messageCollector.log(`  • 总数: ${stats.characters.total}`)
-    messageCollector.log(`  • 本次签到成功: ${stats.characters.succeeded}`)
-    messageCollector.log(`  • 今天已签到: ${stats.characters.alreadyAttended}`)
+    messageCollector.collect(`\n角色统计:`)
+    messageCollector.collect(`  • 总数: ${stats.characters.total}`)
+    messageCollector.collect(`  • 本次签到成功: ${stats.characters.succeeded}`)
+    messageCollector.collect(`  • 今天已签到: ${stats.characters.alreadyAttended}`)
     if (stats.characters.failed > 0) {
-      messageCollector.log(`  • 签到失败: ${stats.characters.failed}`, true)
+      messageCollector.collect(`  • 签到失败: ${stats.characters.failed}`, { isError: true })
     }
 
     await messageCollector.push()

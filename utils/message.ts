@@ -9,7 +9,13 @@ export interface CreateMessageCollectorOptions {
   onError?: () => void
 }
 
-export function createMessageCollector(options: CreateMessageCollectorOptions) {
+export interface MessageCollector {
+  log: (message: string, isError?: boolean) => void
+  push: () => Promise<void>
+  hasError: () => boolean
+}
+
+export function createMessageCollector(options: CreateMessageCollectorOptions): MessageCollector {
   const messages: string[] = []
   let hasError = false
 

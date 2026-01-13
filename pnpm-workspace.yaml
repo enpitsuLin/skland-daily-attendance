@@ -9,7 +9,7 @@ catalogs:
   build:
     rolldown: 1.0.0-beta.57
   dev:
-    '@actions/core': ^2.0.1
+    '@actions/core': ^2.0.2
     '@antfu/eslint-config': ^6.7.3
     eslint: ^9.39.2
     nitro: 3.0.1-alpha.1
@@ -19,6 +19,6 @@ catalogs:
     skland-kit: ^0.1.6
     statocysts: ^0.9.1
     unctx: ^2.5.0
-    unstorage: ^2.0.0-alpha.4
+    unstorage: ^2.0.0-alpha.5
   types:
-    '@types/node': ^25.0.3
+    '@types/node': ^25.0.7

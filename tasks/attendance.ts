@@ -209,8 +209,9 @@ export default defineTask<'success' | 'failed'>({
     if (stats.characters.failed > 0) {
       messageCollector.collect(`  • 签到失败: ${stats.characters.failed}`, { isError: true })
     }
-
-    await messageCollector.push()
+    
+    if (stats.accounts.successful > 0 || stats.accounts.failed > 0)
+      await messageCollector.push()
 
     return { result: hasFailed ? 'failed' : 'success' }
   },

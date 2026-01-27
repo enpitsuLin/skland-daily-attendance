@@ -34,7 +34,7 @@ async function attendance(client: Client, character: AppBindingPlayer, appName?:
     }
     const query = {
       gameId: character.gameId,
-      serverId: Number(character.defaultRole.serverId),
+      serverId: character.defaultRole.serverId,
       roleId: character.defaultRole.roleId,
     }
     const attendanceStatus = await client.collections.game.getAttendanceStatus(query)
@@ -46,7 +46,14 @@ async function attendance(client: Client, character: AppBindingPlayer, appName?:
       }
     }
     const data = await client.collections.game.attendance(query)
-    const awards = data.awards.map(a => `「${a.resource.name}」${a.count}个`).join(',')
+    const awards = data.awardIds.map(a => {
+      const awardId = a.id
+      const award = data.resourceInfoMap[awardId]
+      if (!award) {
+        return `「未知奖励」1 个`
+      }
+      return `「${award.name}」1个`
+    }).join(',')
     return {
       success: true,
       message: `${characterLabel} 签到成功，获得了${awards}`,

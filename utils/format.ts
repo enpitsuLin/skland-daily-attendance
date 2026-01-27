@@ -1,23 +1,39 @@
 import type { AppBindingPlayer } from 'skland-kit'
 
-export function formatCharacterName(character: AppBindingPlayer) {
-  return `${formatChannelName(character.channelMasterId)}角色${formatPrivacyName(character.nickName)}`
+/**
+ * Format game name from appCode
+ */
+export function formatGameName(appCode: string): string {
+  const gameNameMap: Record<string, string> = {
+    arknights: '明日方舟',
+    endfield: '终末地',
+  }
+  return gameNameMap[appCode] || appCode
 }
 
-export function formatChannelName(channelMasterId: string): string {
-  return Number(channelMasterId) - 1 ? 'B 服' : '官服'
+export function formatCharacterName(character: AppBindingPlayer, appName?: string) {
+  const gamePrefix = appName ? `【${appName}】` : ''
+  return `${gamePrefix}${character.channelName}角色${formatPrivacyName(character)}`
 }
 
-export function formatPrivacyName(nickName: string) {
+export function formatPrivacyName(character: AppBindingPlayer) {
+  // 终末地的昵称在 defaultRole 里取
+  if (character.gameId === 3)
+    return `${maskNickname(character.defaultRole?.nickname || '')} lv.${character.defaultRole?.level || 0}`
+
+  const nickName = character.nickName
   const [name, number] = nickName.split('#')
   if (!name)
-    throw new Error('Unexpected Error: nickName is not valid')
+    throw new Error('Unexpected Error: 明日方舟 nickName 格式不正确')
 
+  return `${maskNickname(name)}#${number}`
+}
+
+function maskNickname(name: string) {
   if (name.length <= 1)
-    return nickName
+    return "*"
 
   const firstChar = name[0]
   const stars = '*'.repeat(name.length - 1)
-
-  return `${firstChar}${stars}#${number}`
+  return `${firstChar}${stars}`
 }

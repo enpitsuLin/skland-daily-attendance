@@ -7,18 +7,18 @@ trustPolicyExclude:
   - undici@5.29.0
 catalogs:
   build:
-    rolldown: 1.0.0-beta.57
+    rolldown: 1.0.0-rc.1
   dev:
     '@actions/core': ^2.0.2
-    '@antfu/eslint-config': ^6.7.3
+    '@antfu/eslint-config': ^7.2.0
     eslint: ^9.39.2
-    nitro: 3.0.1-alpha.1
+    nitro: 3.0.1-alpha.2
     typescript: ^5.9.3
     wait-on: ^9.0.3
   lib:
-    skland-kit: ^0.1.6
+    skland-kit: ^0.3.0
     statocysts: ^0.9.1
     unctx: ^2.5.0
     unstorage: ^2.0.0-alpha.5
   types:
-    '@types/node': ^25.0.7
+    '@types/node': ^25.0.10

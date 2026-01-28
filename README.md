@@ -6,19 +6,36 @@
 
 ## 目录
 
-- [功能特点](#功能特点)
-- [快速开始](#快速开始)
-  - [Cloudflare Workers 部署](#cloudflare-workers-部署)
-  - [GitHub Actions 部署](#github-actions-部署)
-  - [Docker 部署](#docker-部署)
-- [配置说明](#配置说明)
-  - [凭据配置](#1-配置凭据)
-  - [消息通知配置](#2-配置消息通知可选)
-  - [持久化存储配置](#3-配置持久化存储可选)
-  - [其他配置](#4-其他配置)
-- [注意事项](#注意事项)
-- [相关项目](#相关项目)
-- [License](#license)
+- [森空岛签到](#森空岛签到)
+  - [目录](#目录)
+  - [功能特点](#功能特点)
+  - [快速开始](#快速开始)
+    - [Cloudflare Workers 部署](#cloudflare-workers-部署)
+    - [GitHub Actions 部署](#github-actions-部署)
+      - [快速开始](#快速开始-1)
+      - [工作流说明](#工作流说明)
+      - [注意事项](#注意事项)
+    - [Docker 部署](#docker-部署)
+      - [使用预构建镜像（推荐）](#使用预构建镜像推荐)
+      - [使用本地构建镜像](#使用本地构建镜像)
+      - [Docker 部署注意事项](#docker-部署注意事项)
+  - [配置说明](#配置说明)
+    - [1. 配置凭据](#1-配置凭据)
+    - [2. 配置消息通知（可选）](#2-配置消息通知可选)
+    - [3. 配置持久化存储（可选）](#3-配置持久化存储可选)
+      - [Upstash Redis（推荐用于 Serverless 环境）](#upstash-redis推荐用于-serverless-环境)
+      - [Redis](#redis)
+      - [AWS S3 兼容存储](#aws-s3-兼容存储)
+      - [Cloudflare KV](#cloudflare-kv)
+      - [Deno KV](#deno-kv)
+      - [本地文件存储（默认）](#本地文件存储默认)
+      - [禁用持久化存储](#禁用持久化存储)
+    - [4. 其他配置](#4-其他配置)
+      - [重试次数](#重试次数)
+      - [隐藏角色名](#隐藏角色名)
+  - [注意事项](#注意事项-1)
+  - [相关项目](#相关项目)
+  - [License](#license)
 
 ## 功能特点
 
@@ -37,7 +54,7 @@
 
 通过一键部署到 Cloudflare Workers，只需要[配置对应的环境变量](#配置说明)即可。
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/enpitsuLin/skland-daily-attendance)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/AEtherside/skland-daily-attendance)
 
 ### GitHub Actions 部署
 

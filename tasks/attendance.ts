@@ -9,6 +9,7 @@ import { createContext } from 'unctx'
 import { attendCharacter, createMessageCollector, generateAttendanceKey, getSplitByComma } from '~/utils/index'
 
 interface GameStats {
+  gameName: string
   total: number
   succeeded: number // 本次签到成功
   alreadyAttended: number // 今天已签到
@@ -85,6 +86,7 @@ async function processAccount(
     // Initialize game stats if not exists
     if (!stats.charactersByGame.has(character.gameId)) {
       stats.charactersByGame.set(character.gameId, {
+        gameName: character.gameName,
         total: 0,
         succeeded: 0,
         alreadyAttended: 0,
@@ -220,9 +222,8 @@ export default defineTask<'success' | 'failed'>({
 
     // Output game-specific statistics
     if (stats.charactersByGame.size > 0) {
-      const sortedGames = Array.from(stats.charactersByGame.entries()).sort((a, b) => a[0] - b[0])
-      for (const [appName, gameStats] of sortedGames) {
-        messageCollector.collect(`\n【${appName}】角色统计:`)
+      for (const gameStats of stats.charactersByGame.values()) {
+        messageCollector.collect(`\n【${gameStats.gameName}】角色统计:`)
         messageCollector.collect(`  • 总数: ${gameStats.total}`)
         messageCollector.collect(`  • 本次签到成功: ${gameStats.succeeded}`)
         messageCollector.collect(`  • 今天已签到: ${gameStats.alreadyAttended}`)

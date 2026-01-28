@@ -94,12 +94,6 @@ async function processAccount(
       })
     }
 
-    // 终末地没角色则跳过
-    if (character.gameId === 3 && !character.defaultRole) {
-      messageCollector.info(`终末地角色未绑定，跳过签到`)
-      continue
-    }
-
     const gameStats = stats.charactersByGame.get(character.gameId)!
     gameStats.total++
 

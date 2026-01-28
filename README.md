@@ -191,14 +191,36 @@ SKLAND_MAX_RETRIES=5
 
 ### Docker 部署
 
-本项目提供了 Docker 和 Docker Compose 配置，方便快速部署。
+本项目提供了 Docker 和 Docker Compose 配置，方便快速部署。Docker 镜像已发布到 [GitHub Container Registry](https://github.com/aetherside/skland-daily-attendance/pkgs/container/skland-daily-attendance)。
 
 <details>
   <summary>Docker 部署</summary>
 
-  #### 使用 Docker Compose (推荐)
+  #### 使用预构建镜像 (推荐)
 
-  1. 创建 `.env` 文件并配置环境变量：
+  直接拉取并运行已构建的镜像：
+
+  ```bash
+  docker pull ghcr.io/aetherside/skland-daily-attendance:main
+  ```
+
+  然后使用 Docker Compose：
+
+  1. 创建 `docker-compose.yml` 文件：
+
+  ```yaml
+  services:
+    skland-attendance:
+      image: ghcr.io/aetherside/skland-daily-attendance:main
+      container_name: skland-attendance
+      restart: unless-stopped
+      env_file:
+        - .env
+      volumes:
+        - ./data:/app/.data
+  ```
+
+  2. 创建 `.env` 文件并配置环境变量：
 
   ```bash
   # 必填：森空岛凭据，多个用逗号分隔
@@ -228,25 +250,27 @@ SKLAND_MAX_RETRIES=5
   # DISABLE_KV=false
   ```
 
-  2. 启动服务：
+  3. 启动服务：
 
   ```bash
   docker compose up -d
   ```
 
-  3. 查看日志：
+  4. 查看日志：
 
   ```bash
   docker compose logs -f
   ```
 
-  4. 停止服务：
+  5. 停止服务：
 
   ```bash
   docker compose down
   ```
 
-  #### 使用 Docker
+  #### 使用本地构建镜像
+
+  如果需要自定义构建，可以使用源码构建：
 
   1. 构建镜像：
 
@@ -261,7 +285,7 @@ SKLAND_MAX_RETRIES=5
     --name skland-attendance \
     --restart unless-stopped \
     -e SKLAND_TOKENS="your-token-1,your-token-2" \
-    -e SKLAND_NOTIFICATION_URLS="your-notification-url" \
+    -e.e SKLAND_NOTIFICATION_URLS="your-notification-url" \
     -v $(pwd)/data:/app/.data \
     skland-attendance
   ```

@@ -46,7 +46,7 @@ async function attendance(client: Client, character: AppBindingPlayer, appName?:
       }
     }
     const data = await client.collections.game.attendance(query)
-    const awards = data.awardIds.map(a => {
+    const awards = data.awardIds.map((a) => {
       const awardId = a.id
       const award = data.resourceInfoMap[awardId]
       if (!award) {

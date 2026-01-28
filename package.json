@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@upstash/redis": "catalog:lib",
     "aws4fetch": "catalog:lib",
     "ioredis": "catalog:lib",
     "skland-kit": "catalog:lib",

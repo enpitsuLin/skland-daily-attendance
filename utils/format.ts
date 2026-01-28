@@ -17,7 +17,8 @@ export function formatCharacterName(character: AppBindingPlayer, appName?: strin
 }
 
 export function formatPrivacyName(character: AppBindingPlayer) {
-  const isMinimalPrivacy = !!process.env.SKLAND_AMONYUS
+  // eslint-disable-next-line node/prefer-global/process
+  const isMinimalPrivacy = !!process.env.SKLAND_ANONYMOUS
 
   // 终末地的昵称在 defaultRole 里取
   if (character.gameId === 3) {

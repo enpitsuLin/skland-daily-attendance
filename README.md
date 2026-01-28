@@ -43,10 +43,10 @@
      | `SKLAND_TOKENS` | 森空岛凭据，多个账号用逗号分隔 | 必填 |
      | `SKLAND_NOTIFICATION_URLS` | 通知 URL，多个 URL 用逗号分隔 | 可选 |
      | `MAX_RETRIES` | 最大重试次数，默认为 3 | 可选 |
-     | `SKLAND_AMONYUS` | 隐藏角色名，设置任意值即可开启（推荐使用 `true` 或 `1`），默认关闭 | 可选 |
+     | `SKLAND_ANONYMOUS` | 隐藏角色名，设置任意值即可开启（推荐使用 `true` 或 `1`），默认关闭 | 可选 |
 
 <details>
-  <summary>关于 "SKLAND_AMONYUS" Secret 名称</summary>
+  <summary>关于 "SKLAND_ANONYMOUS" Secret 名称</summary>
 
   作用：隐藏角色名，设置任意值即可开启（推荐使用 `true` 或 `1`），默认关闭
 

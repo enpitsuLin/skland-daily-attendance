@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "aws4fetch": "catalog:lib",
     "ioredis": "catalog:lib",
     "skland-kit": "catalog:lib",
     "statocysts": "catalog:lib",

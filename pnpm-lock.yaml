@@ -29,6 +29,9 @@ catalogs:
       specifier: ^9.0.3
       version: 9.0.3
   lib:
+    aws4fetch:
+      specifier: ^1.0.20
+      version: 1.0.20
     ioredis:
       specifier: ^5.9.2
       version: 5.9.2
@@ -53,12 +56,15 @@ importers:
 
   .:
     dependencies:
+      aws4fetch:
+        specifier: catalog:lib
+        version: 1.0.20
       ioredis:
         specifier: catalog:lib
         version: 5.9.2
       skland-kit:
         specifier: catalog:lib
-        version: 0.3.3(db0@0.3.4)(ioredis@5.9.2)
+        version: 0.3.3(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.9.2)
       statocysts:
         specifier: catalog:lib
         version: 0.9.1(typescript@5.9.3)
@@ -67,7 +73,7 @@ importers:
         version: 2.5.0
       unstorage:
         specifier: catalog:lib
-        version: 2.0.0-alpha.5(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
+        version: 2.0.0-alpha.5(aws4fetch@1.0.20)(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
     devDependencies:
       '@actions/core':
         specifier: catalog:dev
@@ -83,7 +89,7 @@ importers:
         version: 9.39.2(jiti@2.6.1)
       nitro:
         specifier: catalog:dev
-        version: 3.0.1-alpha.2(chokidar@5.0.0)(ioredis@5.9.2)(lru-cache@11.2.5)(rolldown@1.0.0-rc.1)
+        version: 3.0.1-alpha.2(aws4fetch@1.0.20)(chokidar@5.0.0)(ioredis@5.9.2)(lru-cache@11.2.5)(rolldown@1.0.0-rc.1)
       rolldown:
         specifier: catalog:build
         version: 1.0.0-rc.1
@@ -857,6 +863,9 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  aws4fetch@1.0.20:
+    resolution: {integrity: sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==}
 
   axios@1.13.2:
     resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
@@ -2953,6 +2962,8 @@ snapshots:
 
   asynckit@0.4.0: {}
 
+  aws4fetch@1.0.20: {}
+
   axios@1.13.2:
     dependencies:
       follow-redirects: 1.15.11
@@ -4023,7 +4034,7 @@ snapshots:
 
   nf3@0.3.6: {}
 
-  nitro@3.0.1-alpha.2(chokidar@5.0.0)(ioredis@5.9.2)(lru-cache@11.2.5)(rolldown@1.0.0-rc.1):
+  nitro@3.0.1-alpha.2(aws4fetch@1.0.20)(chokidar@5.0.0)(ioredis@5.9.2)(lru-cache@11.2.5)(rolldown@1.0.0-rc.1):
     dependencies:
       consola: 3.4.2
       crossws: 0.4.3(srvx@0.10.1)
@@ -4038,7 +4049,7 @@ snapshots:
       srvx: 0.10.1
       undici: 7.19.1
       unenv: 2.0.0-rc.24
-      unstorage: 2.0.0-alpha.5(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
+      unstorage: 2.0.0-alpha.5(aws4fetch@1.0.20)(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
     optionalDependencies:
       rolldown: 1.0.0-rc.1
     transitivePeerDependencies:
@@ -4292,14 +4303,14 @@ snapshots:
 
   sisteransi@1.0.5: {}
 
-  skland-kit@0.3.3(db0@0.3.4)(ioredis@5.9.2):
+  skland-kit@0.3.3(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.9.2):
     dependencies:
       date-fns: 4.1.0
       defu: 6.1.4
       mima-kit: 0.1.0
       ofetch: 1.5.1
       unctx: 2.5.0
-      unstorage: 1.17.4(db0@0.3.4)(ioredis@5.9.2)
+      unstorage: 1.17.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.9.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -4447,7 +4458,7 @@ snapshots:
       picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.17.4(db0@0.3.4)(ioredis@5.9.2):
+  unstorage@1.17.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.9.2):
     dependencies:
       anymatch: 3.1.3
       chokidar: 5.0.0
@@ -4458,11 +4469,13 @@ snapshots:
       ofetch: 1.5.1
       ufo: 1.6.3
     optionalDependencies:
+      aws4fetch: 1.0.20
       db0: 0.3.4
       ioredis: 5.9.2
 
-  unstorage@2.0.0-alpha.5(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3):
+  unstorage@2.0.0-alpha.5(aws4fetch@1.0.20)(chokidar@5.0.0)(db0@0.3.4)(ioredis@5.9.2)(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3):
     optionalDependencies:
+      aws4fetch: 1.0.20
       chokidar: 5.0.0
       db0: 0.3.4
       ioredis: 5.9.2

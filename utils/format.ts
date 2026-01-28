@@ -17,7 +17,7 @@ export function formatCharacterName(character: AppBindingPlayer, appName?: strin
 }
 
 export function formatPrivacyName(character: AppBindingPlayer) {
-  const isMinimalPrivacy = process.env.SKLAND_AMONGUS === 'ENABLE_AMONGUS'
+  const isMinimalPrivacy = !!process.env.SKLAND_AMONYUS
 
   // 终末地的昵称在 defaultRole 里取
   if (character.gameId === 3) {

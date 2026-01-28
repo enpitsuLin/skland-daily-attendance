@@ -87,11 +87,20 @@ async function attendance(client: Client, character: AppBindingPlayer, appName?:
   }
 }
 
-export async function attendCharacter(client: Client, character: AppBindingPlayer, maxRetries: number, appName?: string): Promise<AttendanceResult> {
+export async function attendCharacter(
+  client: Client,
+  character: AppBindingPlayer,
+  maxRetries: number,
+  appName?: string,
+  onRetry?: (retriesLeft: number) => void,
+): Promise<AttendanceResult> {
   try {
     return await retry(async () => {
       return await attendance(client, character, appName)
-    }, maxRetries)
+    }, {
+      retries: maxRetries,
+      onRetry: onRetry ? retriesLeft => onRetry(retriesLeft) : undefined,
+    })
   }
   catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)

@@ -62,14 +62,14 @@ async function processAccount(
   const hasAttended = await storage.getItem(attendanceKey)
 
   if (hasAttended) {
-    messageCollector.collect(`\n--- 账号 ${accountNumber}/${totalAccounts} ---`)
-    messageCollector.collect(`今天已经签到过，跳过`, { output: true })
+    messageCollector.notify(`\n--- 账号 ${accountNumber}/${totalAccounts} ---`)
+    messageCollector.info(`今天已经签到过，跳过`)
     stats.accounts.skipped++
     return { accountHasError: false, charactersCount: 0 }
   }
 
-  messageCollector.collect(`\n--- 账号 ${accountNumber}/${totalAccounts} ---`)
-  messageCollector.collect(`开始处理...`, { output: true })
+  messageCollector.notify(`\n--- 账号 ${accountNumber}/${totalAccounts} ---`)
+  messageCollector.info(`开始处理...`)
 
   const client = createClient()
   const { code } = await client.collections.hypergryph.grantAuthorizeCode(token)
@@ -96,23 +96,29 @@ async function processAccount(
 
     // 终末地没角色则跳过
     if (character.gameId === 3 && !character.defaultRole) {
-      messageCollector.collect(`终末地角色未绑定，跳过签到`, { output: true })
+      messageCollector.info(`终末地角色未绑定，跳过签到`)
       continue
     }
 
     const gameStats = stats.charactersByGame.get(character.gameId)!
     gameStats.total++
 
-    const result = await attendCharacter(client, character, maxRetries, character.gameName)
+    const result = await attendCharacter(
+      client,
+      character,
+      maxRetries,
+      character.gameName,
+      retriesLeft => messageCollector.log(`操作失败，剩余重试次数: ${retriesLeft}`),
+    )
 
     // Collect message to notification
     if (result.hasError) {
-      messageCollector.collect(result.message, { output: true, isError: true })
+      messageCollector.infoError(result.message)
       gameStats.failed++
       accountHasError = true
     }
     else {
-      messageCollector.collect(result.message, { output: true })
+      messageCollector.info(result.message)
       if (result.success) {
         gameStats.succeeded++
       }
@@ -159,7 +165,7 @@ export default defineTask<'success' | 'failed'>({
 
     const storage = useStorage()
 
-    messageCollector.collect('## 森空岛每日签到')
+    messageCollector.notify('## 森空岛每日签到')
 
     const maxRetries = Number(config.maxRetries)
 
@@ -201,8 +207,8 @@ export default defineTask<'success' | 'failed'>({
         catch (error) {
           const { stats, messageCollector } = useAttendanceContext()
           const errorMessage = error instanceof Error ? error.message : String(error)
-          messageCollector.collect(`\n--- 账号 ${accountNumber}/${tokens.length} ---`)
-          messageCollector.collect(`处理失败: ${errorMessage}`, { output: true, isError: true })
+          messageCollector.notify(`\n--- 账号 ${accountNumber}/${tokens.length} ---`)
+          messageCollector.infoError(`处理失败: ${errorMessage}`)
           hasFailed = true
           stats.accounts.failed++
           stats.accounts.failedIndexes.push(accountNumber)
@@ -211,24 +217,24 @@ export default defineTask<'success' | 'failed'>({
     })
 
     // Output execution summary
-    messageCollector.collect(`\n========== 执行摘要 ==========`)
-    messageCollector.collect(`账号统计:`)
-    messageCollector.collect(`  • 总数: ${stats.accounts.total}`)
-    messageCollector.collect(`  • 成功: ${stats.accounts.successful}`)
-    messageCollector.collect(`  • 跳过: ${stats.accounts.skipped}`)
+    messageCollector.notify(`\n========== 执行摘要 ==========`)
+    messageCollector.notify(`账号统计:`)
+    messageCollector.notify(`  • 总数: ${stats.accounts.total}`)
+    messageCollector.notify(`  • 成功: ${stats.accounts.successful}`)
+    messageCollector.notify(`  • 跳过: ${stats.accounts.skipped}`)
     if (stats.accounts.failed > 0) {
-      messageCollector.collect(`  • 失败: ${stats.accounts.failed} (账号 #${stats.accounts.failedIndexes.join(', #')})`, { isError: true })
+      messageCollector.notifyError(`  • 失败: ${stats.accounts.failed} (账号 #${stats.accounts.failedIndexes.join(', #')})`)
     }
 
     // Output game-specific statistics
     if (stats.charactersByGame.size > 0) {
       for (const gameStats of stats.charactersByGame.values()) {
-        messageCollector.collect(`\n【${gameStats.gameName}】角色统计:`)
-        messageCollector.collect(`  • 总数: ${gameStats.total}`)
-        messageCollector.collect(`  • 本次签到成功: ${gameStats.succeeded}`)
-        messageCollector.collect(`  • 今天已签到: ${gameStats.alreadyAttended}`)
+        messageCollector.notify(`\n【${gameStats.gameName}】角色统计:`)
+        messageCollector.notify(`  • 总数: ${gameStats.total}`)
+        messageCollector.notify(`  • 本次签到成功: ${gameStats.succeeded}`)
+        messageCollector.notify(`  • 今天已签到: ${gameStats.alreadyAttended}`)
         if (gameStats.failed > 0) {
-          messageCollector.collect(`  • 签到失败: ${gameStats.failed}`, { isError: true })
+          messageCollector.notifyError(`  • 签到失败: ${gameStats.failed}`)
         }
       }
     }

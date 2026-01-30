@@ -15,6 +15,7 @@ catalogs:
     nitro: 3.0.1-alpha.2
     typescript: ^5.9.3
     wait-on: ^9.0.3
+    wrangler: ^4.61.1
   lib:
     '@upstash/redis': ^1.36.1
     aws4fetch: ^1.0.20

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://cdn.jsdelivr.net/npm/wrangler@4.54.0/config-schema.json",
+  "$schema": "node_modules/wrangler/config-schema.json",
   "compatibility_date": "2025-12-26",
   "name": "skland-daily-attendance",
   "compatibility_flags": ["nodejs_als"],

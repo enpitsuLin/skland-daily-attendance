@@ -5,10 +5,24 @@ export function isTodayAttended(attendanceStatus: EndfieldAttendanceStatus): boo
 export function isTodayAttended(
   attendanceStatus: ArknightsAttendanceStatus | EndfieldAttendanceStatus,
 ): boolean {
-  const today = new Date().setHours(0, 0, 0, 0)
+  // Get today's date in Asia/Shanghai timezone (UTC+8)
+  const todayInShanghai = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date())
+
   if ('records' in attendanceStatus) {
     return attendanceStatus.records.some((record) => {
-      return new Date(Number(record.ts) * 1000).setHours(0, 0, 0, 0) === today
+      // record.ts is Unix timestamp in UTC+8
+      const recordDate = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(new Date(Number(record.ts) * 1000))
+      return recordDate === todayInShanghai
     })
   }
   else {

@@ -16,6 +16,7 @@ env:
 
 jobs:
   build-and-push:
+    if: github.repository_owner == 'AEtherside'
     runs-on: ubuntu-latest
     permissions:
       contents: read

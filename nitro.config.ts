@@ -16,4 +16,20 @@ export default defineConfig({
       envPrefix: 'SKLAND_',
     },
   },
+  rolldownConfig: {
+    output: {
+      codeSplitting: {
+        groups: [
+          {
+            name: "unstorage",
+            test: /node_modules\/unstorage\/dist\/drivers\/(?!redis)/,
+          },
+          {
+            name: "unstorage-drivers-redis",
+            test: /node_modules\/unstorage\/dist\/drivers\/redis/,
+          },
+        ]
+      }
+    }
+  }
 })

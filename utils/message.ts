@@ -1,4 +1,4 @@
-import { createSender } from 'statocysts'
+import { createNotifier } from 'statocysts'
 
 export function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value]
@@ -92,9 +92,11 @@ export function createMessageCollector(options: CreateMessageCollectorOptions): 
     const title = '【森空岛每日签到】'
     const content = messages.join('\n\n')
     const urls = options.notificationUrls ? toArray(options.notificationUrls) : []
-    const sender = createSender(urls)
 
-    await sender.send(title, content)
+    if (urls.length > 0) {
+      const notifier = createNotifier(urls)
+      await notifier.send({ title, body: content })
+    }
 
     // Exit with error if any error occurred
     if (hasError && options.onError) {
